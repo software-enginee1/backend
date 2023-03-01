@@ -22,6 +22,13 @@ export const useUserStore = defineStore('user', () => {
     await router.push('/')
   }
 
+  const logout = async () => {
+    if (!auth) throw new Error('No auth instance found')
+
+    await auth.signOut()
+    await router.push('/login')
+  }
+
   const register = async (name: string, email: string, password: string) => {
     if (!auth) throw new Error('No auth instance found')
 
@@ -34,5 +41,5 @@ export const useUserStore = defineStore('user', () => {
     await router.push('/')
   }
 
-  return { login, register }
+  return { login, logout, register }
 })

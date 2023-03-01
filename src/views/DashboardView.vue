@@ -1,7 +1,9 @@
 <script setup>
 import {useCurrentUser} from "vuefire";
+import {useUserStore} from "@/stores/user";
 
 const user = useCurrentUser()
+const userStore = useUserStore();
 </script>
 
 <template>
@@ -15,7 +17,7 @@ const user = useCurrentUser()
               <div class="alert alert-success" role="alert">
                 You are logged in!
                 <div class="my-4">
-                  <button @click.prevent="signOut" class="btn btn-primary">Log Out</button>
+                  <button @click.prevent="userStore.logout" class="btn btn-primary">Log Out</button>
                 </div>
               </div>
             </div>
