@@ -1,4 +1,4 @@
-import {reactive, ref} from 'vue'
+import {reactive} from 'vue'
 import { defineStore } from 'pinia'
 
 export const useUserStore = defineStore('user', () => {
@@ -12,7 +12,7 @@ export const useUserStore = defineStore('user', () => {
     user.isLoggedIn = true
   }
 
-  const register = (email: string, password: string, name: string) => {
+  const register = (name: string, email: string, password: string) => {
     // Do something with the email, password and name
     user.isLoggedIn = true
   }
