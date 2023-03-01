@@ -1,7 +1,7 @@
 <script setup>
-import { useUserStore } from '@/stores/user'
+import {useCurrentUser} from "vuefire";
 
-const userStore = useUserStore()
+const user = useCurrentUser()
 </script>
 
 <template>
@@ -9,8 +9,8 @@ const userStore = useUserStore()
     <div class="row justify-content-center">
       <div class="col-md-8">
         <div class="card">
-          <div v-if="userStore.user.isLoggedIn">
-            <div class="card-header">Welcome, {{ userStore.user.name }}</div>
+          <div v-if="user">
+            <div class="card-header">Welcome, {{ user.displayName }}</div>
             <div class="card-body">
               <div class="alert alert-success" role="alert">
                 You are logged in!
