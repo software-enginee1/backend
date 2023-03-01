@@ -8,6 +8,16 @@ const password = ref('');
 const error = ref(null);
 
 const userStore = useUserStore();
+
+const Register = async () => {
+  await userStore.register(name.value, email.value, password.value)
+    .then(() => {
+      error.value = null;
+    })
+    .catch((err) => {
+      error.value = err.message;
+    });
+}
 </script>
 
 <template>
@@ -18,7 +28,7 @@ const userStore = useUserStore();
           <div class="card-header">Register</div>
           <div class="card-body">
             <div v-if="error" class="alert alert-danger">{{error}}</div>
-            <form action="#" @submit.prevent="userStore.register">
+            <form action="#" @submit.prevent="Register">
               <div class="form-group row">
                 <label for="name" class="col-md-4 col-form-label text-md-right">Name</label>
 

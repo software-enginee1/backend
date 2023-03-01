@@ -7,6 +7,16 @@ const password = ref('');
 const error = ref(null);
 
 const userStore = useUserStore();
+
+const Login = async () => {
+  await userStore.login(email.value, password.value)
+    .then(() => {
+      error.value = null;
+    })
+    .catch((err) => {
+      error.value = err.message;
+    });
+}
 </script>
 
 <template>
@@ -17,7 +27,7 @@ const userStore = useUserStore();
           <div class="card-header">Login</div>
           <div class="card-body">
             <div v-if="error" class="alert alert-danger">{{error}}</div>
-            <form action="#"  @submit.prevent="userStore.login">
+            <form action="#"  @submit.prevent="Login">
               <div class="form-group row">
                 <label for="email" class="col-md-4 col-form-label text-md-right">Email</label>
 
