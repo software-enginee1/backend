@@ -1,6 +1,10 @@
 import { reactive } from 'vue'
 import { defineStore } from 'pinia'
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
+import {
+  createUserWithEmailAndPassword,
+  updateProfile,
+  signInWithEmailAndPassword
+} from 'firebase/auth'
 import { useFirebaseAuth } from 'vuefire'
 import { useRouter } from 'vue-router'
 
@@ -13,9 +17,12 @@ export const useUserStore = defineStore('user', () => {
   const router = useRouter()
   const auth = useFirebaseAuth()
 
-  const login = (email: string, password: string) => {
-    // Do something with the email and password
-    user.isLoggedIn = true
+  const login = async (email: string, password: string) => {
+    if (!auth) throw new Error('No auth instance found')
+
+    await signInWithEmailAndPassword(auth, email, password)
+
+    await router.push('/')
   }
 
   const register = async (name: string, email: string, password: string) => {
