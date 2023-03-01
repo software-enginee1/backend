@@ -6,8 +6,10 @@ import {
   setPersistence,
   browserLocalPersistence
 } from 'firebase/auth'
+import { setDoc, doc } from 'firebase/firestore'
 import { useFirebaseAuth } from 'vuefire'
 import { useRouter } from 'vue-router'
+import { usersRef } from '@/firebase'
 
 export const useUserStore = defineStore('user', () => {
   const router = useRouter()
@@ -37,6 +39,8 @@ export const useUserStore = defineStore('user', () => {
     await updateProfile(userCredential.user, {
       displayName: name
     })
+
+    await setDoc(doc(usersRef, userCredential.user.uid), { name: name })
 
     await router.push('/')
   }
