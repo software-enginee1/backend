@@ -1,21 +1,22 @@
 <script setup>
 import { ref } from 'vue'
-import { useUserStore } from "@/stores/user";
+import { useUserStore } from '@/stores/user'
 
-const email = ref('');
-const password = ref('');
-const error = ref(null);
+const email = ref('')
+const password = ref('')
+const error = ref(null)
 
-const userStore = useUserStore();
+const userStore = useUserStore()
 
 const Login = async () => {
-  await userStore.login(email.value, password.value)
+  await userStore
+    .login(email.value, password.value)
     .then(() => {
-      error.value = null;
+      error.value = null
     })
     .catch((err) => {
-      error.value = err.message;
-    });
+      error.value = err.message
+    })
 }
 </script>
 
@@ -26,21 +27,21 @@ const Login = async () => {
         <div class="card">
           <div class="card-header">Login</div>
           <div class="card-body">
-            <div v-if="error" class="alert alert-danger">{{error}}</div>
-            <form action="#"  @submit.prevent="Login">
+            <div v-if="error" class="alert alert-danger">{{ error }}</div>
+            <form action="#" @submit.prevent="Login">
               <div class="form-group row">
                 <label for="email" class="col-md-4 col-form-label text-md-right">Email</label>
 
                 <div class="col-md-6">
                   <input
-                      id="email"
-                      type="email"
-                      class="form-control"
-                      name="email"
-                      value
-                      required
-                      autofocus
-                      v-model="email"
+                    id="email"
+                    type="email"
+                    class="form-control"
+                    name="email"
+                    value
+                    required
+                    autofocus
+                    v-model="email"
                   />
                 </div>
               </div>
@@ -50,12 +51,12 @@ const Login = async () => {
 
                 <div class="col-md-6">
                   <input
-                      id="password"
-                      type="password"
-                      class="form-control"
-                      name="password"
-                      required
-                      v-model="password"
+                    id="password"
+                    type="password"
+                    class="form-control"
+                    name="password"
+                    required
+                    v-model="password"
                   />
                 </div>
               </div>
@@ -73,6 +74,4 @@ const Login = async () => {
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

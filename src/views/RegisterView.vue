@@ -1,22 +1,23 @@
 <script setup>
 import { ref } from 'vue'
-import { useUserStore } from "@/stores/user";
+import { useUserStore } from '@/stores/user'
 
-const name = ref('');
-const email = ref('');
-const password = ref('');
-const error = ref(null);
+const name = ref('')
+const email = ref('')
+const password = ref('')
+const error = ref(null)
 
-const userStore = useUserStore();
+const userStore = useUserStore()
 
 const Register = async () => {
-  await userStore.register(name.value, email.value, password.value)
+  await userStore
+    .register(name.value, email.value, password.value)
     .then(() => {
-      error.value = null;
+      error.value = null
     })
     .catch((err) => {
-      error.value = err.message;
-    });
+      error.value = err.message
+    })
 }
 </script>
 
@@ -27,21 +28,21 @@ const Register = async () => {
         <div class="card">
           <div class="card-header">Register</div>
           <div class="card-body">
-            <div v-if="error" class="alert alert-danger">{{error}}</div>
+            <div v-if="error" class="alert alert-danger">{{ error }}</div>
             <form action="#" @submit.prevent="Register">
               <div class="form-group row">
                 <label for="name" class="col-md-4 col-form-label text-md-right">Name</label>
 
                 <div class="col-md-6">
                   <input
-                      id="name"
-                      type="text"
-                      class="form-control"
-                      name="name"
-                      value
-                      required
-                      autofocus
-                      v-model="name"
+                    id="name"
+                    type="text"
+                    class="form-control"
+                    name="name"
+                    value
+                    required
+                    autofocus
+                    v-model="name"
                   />
                 </div>
               </div>
@@ -51,14 +52,14 @@ const Register = async () => {
 
                 <div class="col-md-6">
                   <input
-                      id="email"
-                      type="email"
-                      class="form-control"
-                      name="email"
-                      value
-                      required
-                      autofocus
-                      v-model="email"
+                    id="email"
+                    type="email"
+                    class="form-control"
+                    name="email"
+                    value
+                    required
+                    autofocus
+                    v-model="email"
                   />
                 </div>
               </div>
@@ -68,12 +69,12 @@ const Register = async () => {
 
                 <div class="col-md-6">
                   <input
-                      id="password"
-                      type="password"
-                      class="form-control"
-                      name="password"
-                      required
-                      v-model="password"
+                    id="password"
+                    type="password"
+                    class="form-control"
+                    name="password"
+                    required
+                    v-model="password"
                   />
                 </div>
               </div>
@@ -91,6 +92,4 @@ const Register = async () => {
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
