@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
-import { useUserStore } from '@/stores/user'
 import { useRouter } from 'vue-router'
+import { register } from '@/plugins/firebaseAuth'
 
 const name = ref('')
 const email = ref('')
@@ -9,11 +9,9 @@ const password = ref('')
 const error = ref(null)
 
 const router = useRouter()
-const userStore = useUserStore()
 
 const Register = async () => {
-  await userStore
-    .register(name.value, email.value, password.value)
+  await register(name.value, email.value, password.value)
     .then(() => {
       error.value = null
       router.push('/')

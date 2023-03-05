@@ -1,16 +1,14 @@
 <script setup>
 import { useCurrentUser } from 'vuefire'
-import { useUserStore } from '@/stores/user'
+import { logout } from '@/plugins/firebaseAuth'
 import { useRouter } from 'vue-router'
 
 const user = useCurrentUser()
 
 const router = useRouter()
-const userStore = useUserStore()
 
 const Logout = async () =>
-  userStore
-    .logout()
+  logout()
     .then(() => {
       router.push('/login')
     })
