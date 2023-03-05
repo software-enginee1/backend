@@ -6,7 +6,7 @@ import {
   updateProfile
 } from 'firebase/auth'
 import { doc, setDoc } from 'firebase/firestore'
-import { usersRef } from '@/firebase'
+import { usersRef } from '@/plugins/firebaseDB'
 import { useFirebaseAuth } from 'vuefire'
 
 const auth = useFirebaseAuth()
