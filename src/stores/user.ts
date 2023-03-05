@@ -8,11 +8,9 @@ import {
 } from 'firebase/auth'
 import { setDoc, doc } from 'firebase/firestore'
 import { useFirebaseAuth } from 'vuefire'
-import { useRouter } from 'vue-router'
 import { usersRef } from '@/firebase'
 
 export const useUserStore = defineStore('user', () => {
-  const router = useRouter()
   const auth = useFirebaseAuth()
 
   const login = async (email: string, password: string) => {
@@ -20,15 +18,12 @@ export const useUserStore = defineStore('user', () => {
 
     await setPersistence(auth, browserLocalPersistence)
     await signInWithEmailAndPassword(auth, email, password)
-
-    await router.push('/')
   }
 
   const logout = async () => {
     if (!auth) throw new Error('No auth instance found')
 
     await auth.signOut()
-    await router.push('/login')
   }
 
   const register = async (name: string, email: string, password: string) => {
@@ -41,8 +36,6 @@ export const useUserStore = defineStore('user', () => {
     })
 
     await setDoc(doc(usersRef, userCredential.user.uid), { name: name })
-
-    await router.push('/')
   }
 
   return { login, logout, register }

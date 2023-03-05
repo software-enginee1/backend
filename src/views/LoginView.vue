@@ -1,11 +1,13 @@
 <script setup>
 import { ref } from 'vue'
 import { useUserStore } from '@/stores/user'
+import { useRouter } from 'vue-router'
 
 const email = ref('')
 const password = ref('')
 const error = ref(null)
 
+const router = useRouter()
 const userStore = useUserStore()
 
 const Login = async () => {
@@ -13,6 +15,7 @@ const Login = async () => {
     .login(email.value, password.value)
     .then(() => {
       error.value = null
+      router.push('/')
     })
     .catch((err) => {
       error.value = err.message

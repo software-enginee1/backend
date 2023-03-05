@@ -1,17 +1,22 @@
 <script setup>
-import {useCurrentUser} from 'vuefire'
-import {useUserStore} from '@/stores/user'
+import { useCurrentUser } from 'vuefire'
+import { useUserStore } from '@/stores/user'
+import { useRouter } from 'vue-router'
 
 const user = useCurrentUser()
 
+const router = useRouter()
 const userStore = useUserStore()
 
 const Logout = async () =>
-    userStore.logout()
-        .catch((err) => {
-          alert(err.message)
-        })
-
+  userStore
+    .logout()
+    .then(() => {
+      router.push('/login')
+    })
+    .catch((err) => {
+      alert(err.message)
+    })
 </script>
 
 <template>

@@ -1,12 +1,14 @@
 <script setup>
 import { ref } from 'vue'
 import { useUserStore } from '@/stores/user'
+import { useRouter } from 'vue-router'
 
 const name = ref('')
 const email = ref('')
 const password = ref('')
 const error = ref(null)
 
+const router = useRouter()
 const userStore = useUserStore()
 
 const Register = async () => {
@@ -14,6 +16,7 @@ const Register = async () => {
     .register(name.value, email.value, password.value)
     .then(() => {
       error.value = null
+      router.push('/')
     })
     .catch((err) => {
       error.value = err.message
