@@ -1,13 +1,12 @@
+<script setup>
+import NavBar from '@/components/NavBar.vue'
+</script>
+
 <template>
   <div>
-    <main class="py-4">
+    <main>
+      <NavBar />
       <router-view></router-view>
     </main>
   </div>
 </template>
-
-<script>
-export default {
-  name: 'App'
-}
-</script>
