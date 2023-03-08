@@ -7,7 +7,7 @@ import { getCurrentUser } from 'vuefire'
 const routes = [
   {
     path: '/login',
-    name: 'login',
+    name: 'Login',
     component: LoginView
   },
   {
@@ -46,6 +46,8 @@ router.beforeEach(async (to) => {
     alert("You're already logged in!")
     return '/'
   }
+
+  document.title = `${to.name?.toString()} - The Ultimate Patreon Clone App` ?? 'Patreon'
 })
 
 export default router
