@@ -70,6 +70,10 @@ const Register = async () => {
         />
       </div>
 
+      <div class="form-group self-center mt-5">
+        <p class="text-red-400">{{ error }}</p>
+      </div>
+
       <div class="form-group self-center m-5">
         <button type="submit" class="btn" :disabled="shouldDisableForm()">Register</button>
       </div>
