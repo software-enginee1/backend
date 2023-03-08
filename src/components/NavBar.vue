@@ -2,6 +2,7 @@
 import { useCurrentUser } from 'vuefire'
 import { logout } from '@/plugins/firebaseAuth'
 import { useRouter } from 'vue-router'
+import { UserCircleIcon } from '@heroicons/vue/24/outline'
 
 const router = useRouter()
 
@@ -38,14 +39,17 @@ const Logout = async () =>
           </button>
         </div>
         <div class="max-lg:hidden flex items-center gap-8">
-          <a href="/" class="link"> Home </a>
-          <a href="/profile" class="link"> Profile </a>
-          <a href="/activity" class="link"> Activity </a>
-          <a
+          <router-link to="/" class="link"> Home </router-link>
+          <router-link to="/post" class="link" v-if="user"> Post </router-link>
+          <router-link to="/profile" v-if="user">
+            <UserCircleIcon class="h-8 w-8 link" />
+          </router-link>
+          <div
             @click="user ? Logout() : router.push('/register')"
             class="inline-block cursor-pointer text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-indigo-500 hover:bg-white mt-4 lg:mt-0"
-            >{{ user ? 'Logout' : 'Register' }}</a
           >
+            {{ user ? 'Logout' : 'Register' }}
+          </div>
         </div>
       </nav>
     </div>
