@@ -6,7 +6,7 @@ import { register } from '@/plugins/firebaseAuth'
 const name = ref('')
 const email = ref('')
 const password = ref('')
-const error = ref(null)
+const error = ref("")
 
 const router = useRouter()
 
@@ -71,12 +71,15 @@ const Register = async () => {
           />
         </div>
 
-        <div class="form-group self-center mt-5">
-          <p class="text-red-400">{{ error }}</p>
-        </div>
+        <p class="text-red-400 self-center  mt-5">{{ error }}</p>
 
         <div class="form-group self-center m-5">
           <button type="submit" class="btn" :disabled="shouldDisableForm()">Register</button>
+        </div>
+
+        <div class="flex gap-1 self-center">
+          <p>Already a member?</p>
+          <a href="/login" class="text-indigo-500 hover:underline">Login</a>
         </div>
       </form>
     </div>
