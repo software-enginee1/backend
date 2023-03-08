@@ -1,4 +1,20 @@
-<script setup></script>
+<script setup>
+import { useCurrentUser } from 'vuefire'
+import { logout } from '@/plugins/firebaseAuth'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+
+const user = useCurrentUser()
+const Logout = async () =>
+  logout()
+    .then(() => {
+      router.push('/login')
+    })
+    .catch((err) => {
+      alert(err.message)
+    })
+</script>
 
 <template>
   <nav class="flex items-center justify-between flex-wrap bg-indigo-500 p-6">
@@ -20,9 +36,9 @@
       <a href="/profile" class="link"> Profile </a>
       <a href="/activity" class="link"> Activity </a>
       <a
-        href="/register"
-        class="inline-block text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
-        >Register</a
+        @click="user ? Logout() : router.push('/register')"
+        class="inline-block cursor-pointer text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
+        >{{ user ? 'Logout' : 'Register' }}</a
       >
     </div>
   </nav>

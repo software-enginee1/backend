@@ -1,20 +1,7 @@
 <script setup>
 import { useCurrentUser } from 'vuefire'
-import { logout } from '@/plugins/firebaseAuth'
-import { useRouter } from 'vue-router'
 
 const user = useCurrentUser()
-
-const router = useRouter()
-
-const Logout = async () =>
-  logout()
-    .then(() => {
-      router.push('/login')
-    })
-    .catch((err) => {
-      alert(err.message)
-    })
 </script>
 
 <template>
@@ -27,9 +14,6 @@ const Logout = async () =>
             <div class="card-body">
               <div class="alert alert-success" role="alert">
                 You are logged in!
-                <div class="my-4">
-                  <button @click.prevent="Logout" class="btn btn-primary">Log Out</button>
-                </div>
               </div>
             </div>
           </div>
