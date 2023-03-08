@@ -25,7 +25,7 @@ const Logout = async () =>
         </div>
         <div class="block lg:hidden">
           <button
-            class="flex items-center px-3 py-2 border rounded text-teal-200 border-teal-400 hover:text-white hover:border-white"
+            class="flex items-center px-3 py-2 border rounded text-indigo-200 border-indigo-400 hover:text-white hover:border-white"
           >
             <svg
               class="fill-current h-3 w-3"
@@ -43,7 +43,7 @@ const Logout = async () =>
           <a href="/activity" class="link"> Activity </a>
           <a
             @click="user ? Logout() : router.push('/register')"
-            class="inline-block cursor-pointer text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-teal-500 hover:bg-white mt-4 lg:mt-0"
+            class="inline-block cursor-pointer text-sm px-4 py-2 leading-none border rounded text-white border-white hover:border-transparent hover:text-indigo-500 hover:bg-white mt-4 lg:mt-0"
             >{{ user ? 'Logout' : 'Register' }}</a
           >
         </div>

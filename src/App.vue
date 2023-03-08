@@ -4,8 +4,10 @@ import NavBar from '@/components/NavBar.vue'
 
 <template>
   <div>
-    <main>
+    <header class="sticky top-0 z-50">
       <NavBar />
+    </header>
+    <main class="relative">
       <router-view></router-view>
     </main>
   </div>
