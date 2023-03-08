@@ -1,28 +1,28 @@
 <script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-import { register } from "@/plugins/firebaseAuth";
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { register } from '@/plugins/firebaseAuth'
 
-const name = ref("");
-const email = ref("");
-const password = ref("");
-const error = ref(null);
+const name = ref('')
+const email = ref('')
+const password = ref('')
+const error = ref(null)
 
-const router = useRouter();
+const router = useRouter()
 
 const shouldDisableForm = ref(() => {
-  return name.value === "" || email.value === "" || password.value === "";
-});
+  return name.value === '' || email.value === '' || password.value === ''
+})
 
 const Register = async () => {
   await register(name.value, email.value, password.value)
     .then(() => {
-      error.value = null;
-      router.push("/");
+      error.value = null
+      router.push('/')
     })
     .catch((err) => {
-      error.value = err.message;
-    });
+      error.value = err.message
+    })
 }
 </script>
 
