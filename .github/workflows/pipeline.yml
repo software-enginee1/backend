@@ -19,9 +19,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Install dependencies
-        run: npm install
-      - name: Lint with Eslint
-        run: eslint .
+        uses: npm install
+      - name: Install eslint
+        run: npm install eslint --save-dev
+      - name: Install prettier
+        run: npm install prettier --save-dev
+      - name: Install eslint plugins
+        run: npm install eslint-plugin-prettier eslint-config-prettier --save-dev
+      - name: Install eslint config
+        run: npm install eslint-config-airbnb-base --save-dev
+      - name: Lint code
+        run: eslint . --ext .js,.jsx,.ts,.tsx --fix
       - name: Prettify code
         run: prettier --write '**/*.{js,css,html,json,md,yaml}'
 
