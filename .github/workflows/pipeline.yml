@@ -31,7 +31,7 @@ jobs:
       - name: Run lint
         run: npm run lint
       - name: Prettify code
-        run: prettier --write '**/*.{js,css,html,json,md,yaml}'
+        run: npm run format
 
   # test:
   #  name: Test
