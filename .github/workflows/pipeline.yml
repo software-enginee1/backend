@@ -19,7 +19,9 @@ jobs:
       contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2
       - name: Install dependencies
         run: npm install
       - name: Install eslint
@@ -34,11 +36,17 @@ jobs:
         run: npm run lint
       - name: Prettify code
         run: npm run format
+      - name: Get last commit message
+        id: last-commit-message
+        run: |
+          echo "msg=$(git log -1 --pretty=%s)" >> $GITHUB_OUTPUT
       - name: Commit changes
         uses: stefanzweifel/git-auto-commit-action@v4.16.0
         with:
-          commit_message: Apply linting & formatting changes
-          branch: ${{ github.head_ref }}
+          commit_message: ${{ steps.last-commit-message.outputs.msg }}
+          commit_options: '--amend --no-edit'
+          push_options: '--force'
+          skip_fetch: true
 
   # test:
   #  name: Test
