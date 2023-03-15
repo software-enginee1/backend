@@ -32,6 +32,11 @@ jobs:
         run: npm run lint
       - name: Prettify code
         run: npm run format
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Apply linting & formatting changes
+          branch: ${{ github.head_ref }}
 
   # test:
   #  name: Test
