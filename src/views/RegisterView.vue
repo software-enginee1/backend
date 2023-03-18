@@ -6,7 +6,7 @@ import { register } from '@/plugins/firebaseAuth'
 const name = ref('')
 const email = ref('')
 const password = ref('')
-const error = ref(null)
+const error = ref('')
 
 const router = useRouter()
 
@@ -27,57 +27,62 @@ const Register = async () => {
 </script>
 
 <template>
-  <div class="flex flex-col items-center content-center gap-9">
-    <h1 class="text-3xl font-bold">Get Started</h1>
-    <form class="flex flex-col content-center gap-4" action="#" @submit.prevent="Register">
-      <div class="form-group">
-        <label for="name" class="font-bold">Name</label>
-        <input
-          id="name"
-          type="text"
-          class="form-control"
-          name="name"
-          value
-          required
-          autofocus
-          v-model="name"
-        />
-      </div>
+  <div class="container mt-36">
+    <div class="flex flex-col items-center content-center gap-9">
+      <h1 class="text-3xl font-bold">Get Started</h1>
+      <form class="flex flex-col content-center gap-4" action="#" @submit.prevent="Register">
+        <div class="form-group">
+          <label for="name" class="font-bold">Name</label>
+          <input
+            id="name"
+            type="text"
+            class="form-control"
+            name="name"
+            value
+            required
+            autofocus
+            v-model="name"
+          />
+        </div>
 
-      <div class="form-group">
-        <label for="email" class="font-bold">Email</label>
-        <input
-          id="email"
-          type="email"
-          class="form-control"
-          name="email"
-          value
-          required
-          autofocus
-          v-model="email"
-        />
-      </div>
+        <div class="form-group">
+          <label for="email" class="font-bold">Email</label>
+          <input
+            id="email"
+            type="email"
+            class="form-control"
+            name="email"
+            value
+            required
+            autofocus
+            v-model="email"
+          />
+        </div>
 
-      <div class="form-group">
-        <label for="password" class="font-bold">Password</label>
-        <input
-          id="password"
-          type="password"
-          class="form-control"
-          name="password"
-          required
-          v-model="password"
-        />
-      </div>
+        <div class="form-group">
+          <label for="password" class="font-bold">Password</label>
+          <input
+            id="password"
+            type="password"
+            class="form-control"
+            name="password"
+            required
+            v-model="password"
+          />
+        </div>
 
-      <div class="form-group self-center mt-5">
-        <p class="text-red-400">{{ error }}</p>
-      </div>
+        <p class="text-red-400 self-center mt-5">{{ error }}</p>
 
-      <div class="form-group self-center m-5">
-        <button type="submit" class="btn" :disabled="shouldDisableForm()">Register</button>
-      </div>
-    </form>
+        <div class="form-group self-center m-5">
+          <button type="submit" class="btn" :disabled="shouldDisableForm()">Register</button>
+        </div>
+
+        <div class="flex gap-1 self-center">
+          <p>Already a member?</p>
+          <a href="/login" class="text-indigo-500 hover:underline">Login</a>
+        </div>
+      </form>
+    </div>
   </div>
 </template>
 

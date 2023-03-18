@@ -11,15 +11,12 @@
 }
 
 #app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  margin: auto;
 
   font-weight: normal;
   font-family: 'Nunito', sans-serif;
 }
 
-body {
-  display: flex;
-  place-items: center;
+.container {
+  @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col;
 }
