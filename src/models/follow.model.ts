@@ -1,4 +1,4 @@
-export interface Follow {
+export interface IFollow {
   followerId: string
   followingId: string
 }

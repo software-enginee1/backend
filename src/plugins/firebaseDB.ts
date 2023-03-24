@@ -1,17 +1,15 @@
 import { collection, doc, getFirestore, getDoc, getDocs, query, where } from 'firebase/firestore'
 import { firebaseApp } from '@/firebase'
-import type { Profile } from '@/models/profile.model'
-import type { Post } from '@/models/post.model'
-import type { Follow } from '@/models/follow.model'
-import type { Like } from '@/models/like.model'
+import type { IProfile } from '@/models/profile.model'
+import type { IPost } from '@/models/post.model'
+import type { IFollow } from '@/models/follow.model'
 
 const db = getFirestore(firebaseApp)
 const usersRef = collection(db, 'users')
 const postsRef = collection(db, 'posts')
 const followsRef = collection(db, 'follows')
-const likesRef = collection(db, 'likes')
 
-const fetchProfile = async (uid: string): Promise<Profile> => {
+const fetchProfile = async (uid: string): Promise<IProfile> => {
   const userDoc = doc(usersRef, uid)
   const snapshot = await getDoc(userDoc)
 
@@ -25,30 +23,21 @@ const fetchProfile = async (uid: string): Promise<Profile> => {
   }
 }
 
-const fetchPost = async (): Promise<Post[]> => {
+const fetchPost = async (): Promise<IPost[]> => {
   const querySnapshot = await getDocs(postsRef)
-  return querySnapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data()
-  })) as Post[]
+  return querySnapshot.docs.map(
+    (snapshot) =>
+      ({
+        id: snapshot.id,
+        ...snapshot.data()
+      } as IPost)
+  )
 }
 
-const fetchFollow = async (userId: string): Promise<Follow[]> => {
+const fetchFollow = async (userId: string): Promise<IFollow[]> => {
   const q = query(followsRef, where('followerId', '==', userId))
   const querySnapshot = await getDocs(q)
-  return querySnapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data()
-  })) as unknown as Follow[]
+  return querySnapshot.docs.map((doc) => doc.data() as IFollow)
 }
 
-const fetchLike = async (postId: string): Promise<Like[]> => {
-  const q = query(likesRef, where('postId', '==', postId))
-  const querySnapshot = await getDocs(q)
-  return querySnapshot.docs.map((doc) => ({
-    id: doc.id,
-    ...doc.data()
-  })) as unknown as Like[]
-}
-
-export { usersRef, followsRef, likesRef, postsRef, fetchProfile, fetchPost, fetchFollow, fetchLike }
+export { usersRef, followsRef, postsRef, fetchProfile, fetchPost, fetchFollow }
