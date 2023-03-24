@@ -82,7 +82,7 @@ jobs:
         uses: actions/download-artifact@master
         with:
           name: coverage
-          path: ~/coverage/lcov.info
+          path: /github/workspace/coverage/lcov.info
       - name: SonarQube Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
