@@ -71,6 +71,8 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Install dependencies
+        run: npm install
       - name: SonarQube Scan
         uses: sonarsource/sonarcloud-github-action@master
         env:
