@@ -1,8 +1,19 @@
-import { collection, doc, getFirestore, getDoc, getDocs, query, where } from 'firebase/firestore'
+import {
+  collection,
+  doc,
+  getFirestore,
+  getDoc,
+  getDocs,
+  query,
+  where,
+  updateDoc
+} from 'firebase/firestore'
 import { firebaseApp } from '@/firebase'
 import type { IProfile } from '@/models/profile.model'
 import type { IPost } from '@/models/post.model'
 import type { IFollow } from '@/models/follow.model'
+import firebase from 'firebase/compat'
+import FieldValue = firebase.firestore.FieldValue
 
 const db = getFirestore(firebaseApp)
 const usersRef = collection(db, 'users')
@@ -40,4 +51,12 @@ const fetchFollow = async (userId: string): Promise<IFollow[]> => {
   return querySnapshot.docs.map((doc) => doc.data() as IFollow)
 }
 
-export { usersRef, followsRef, postsRef, fetchProfile, fetchPost, fetchFollow }
+const likePost = async (postId: string, userId: string) => {
+  const postDoc = doc(postsRef, postId)
+  await updateDoc(postDoc, { likesCount: FieldValue.increment })
+
+  const userDoc = doc(usersRef, userId)
+  await updateDoc(userDoc, { likes: FieldValue.arrayUnion(postId) })
+}
+
+export { usersRef, followsRef, postsRef, fetchProfile, fetchPost, fetchFollow, likePost }
