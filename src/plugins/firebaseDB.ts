@@ -6,14 +6,14 @@ import {
   getDocs,
   query,
   where,
-  updateDoc
+  updateDoc,
+  increment,
+  arrayUnion
 } from 'firebase/firestore'
 import { firebaseApp } from '@/firebase'
 import type { IProfile } from '@/models/profile.model'
 import type { IPost } from '@/models/post.model'
 import type { IFollow } from '@/models/follow.model'
-import firebase from 'firebase/compat'
-import FieldValue = firebase.firestore.FieldValue
 
 const db = getFirestore(firebaseApp)
 const usersRef = collection(db, 'users')
@@ -53,10 +53,10 @@ const fetchFollow = async (userId: string): Promise<IFollow[]> => {
 
 const likePost = async (postId: string, userId: string) => {
   const postDoc = doc(postsRef, postId)
-  await updateDoc(postDoc, { likesCount: FieldValue.increment })
+  await updateDoc(postDoc, { likesCount: increment })
 
   const userDoc = doc(usersRef, userId)
-  await updateDoc(userDoc, { likes: FieldValue.arrayUnion(postId) })
+  await updateDoc(userDoc, { likes: arrayUnion(postId) })
 }
 
 export { usersRef, followsRef, postsRef, fetchProfile, fetchPost, fetchFollow, likePost }
