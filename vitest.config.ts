@@ -12,7 +12,8 @@ export default mergeConfig(
       root: fileURLToPath(new URL('./', import.meta.url)),
       coverage: {
         provider: 'c8',
-        reporter: ['lcov']
+        reporter: ['lcov'],
+        reportsDirectory: 'src/coverage'
       }
     }
   })
