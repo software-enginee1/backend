@@ -4,7 +4,7 @@ import { logout } from '@/plugins/firebaseAuth'
 import { useRouter } from 'vue-router'
 import { UserCircleIcon, XCircleIcon } from '@heroicons/vue/24/outline'
 import { ref } from 'vue'
-import SearchBar from "@/components/SearchBar.vue";
+import SearchBar from '@/components/SearchBar.vue'
 
 const router = useRouter()
 const showMobileNav = ref(false)
