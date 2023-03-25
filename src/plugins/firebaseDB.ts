@@ -8,7 +8,8 @@ import {
   where,
   updateDoc,
   increment,
-  arrayUnion
+  arrayUnion,
+  arrayRemove
 } from 'firebase/firestore'
 import { firebaseApp } from '@/firebase'
 import type { IProfile } from '@/models/profile.model'
@@ -52,11 +53,20 @@ const fetchFollow = async (userId: string): Promise<IFollow[]> => {
 }
 
 const likePost = async (postId: string, userId: string) => {
-  const postDoc = doc(postsRef, postId)
-  await updateDoc(postDoc, { likesCount: increment })
+  const profile = await fetchProfile(userId)
+  const isAlreadyLikePost = profile.likes?.includes(postId) ?? false
 
+  const postDoc = doc(postsRef, postId)
   const userDoc = doc(usersRef, userId)
-  await updateDoc(userDoc, { likes: arrayUnion(postId) })
+
+  if (isAlreadyLikePost) {
+    // if user already liked the post, unlike it
+    await updateDoc(postDoc, { likesCount: increment(-1) })
+    await updateDoc(userDoc, { likes: arrayRemove(postId) })
+  } else {
+    await updateDoc(postDoc, { likesCount: increment(1) })
+    await updateDoc(userDoc, { likes: arrayUnion(postId) })
+  }
 }
 
 export { usersRef, followsRef, postsRef, fetchProfile, fetchPost, fetchFollow, likePost }
