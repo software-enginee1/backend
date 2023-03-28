@@ -1,36 +1,32 @@
 <script>
-import { defineComponent} from 'vue'
+import { defineComponent } from 'vue'
 import { useCurrentUser } from 'vuefire'
 // import { db } from '@/plugins/firebaseDB'
 
-
 export default defineComponent({
   setup() {
-    const user = useCurrentUser();
+    const user = useCurrentUser()
     // const userPosts = ref([]);
     return {
       user
-    };
-  },
-});
+    }
+  }
+})
 </script>
-
 
 <template>
   <div class="white-container">
     <div>
-
-      <div class='card'>
-        <div class='card-header'>{{ user.displayName }}</div>
-        <div class='card-body'>
-<!--          <div class='bio'> {{ user.metadata.bio }}</div>-->
-          <div class='register-date'>
-            <img src="@/assets/calendar.png" alt="calendar" width="25" height="25">
-            <p> Joined {{ user.metadata.creationTime }} </p>
+      <div class="card">
+        <div class="card-header">{{ user.displayName }}</div>
+        <div class="card-body">
+          <!--          <div class='bio'> {{ user.metadata.bio }}</div>-->
+          <div class="register-date">
+            <img src="@/assets/calendar.png" alt="calendar" width="25" height="25" />
+            <p>Joined {{ user.metadata.creationTime }}</p>
           </div>
         </div>
       </div>
-
     </div>
   </div>
 </template>
@@ -46,7 +42,7 @@ export default defineComponent({
   margin: 0 auto;
   min-height: 100vh;
 }
-.register-date{
+.register-date {
   display: flex;
   align-items: center;
   gap: 1rem;
