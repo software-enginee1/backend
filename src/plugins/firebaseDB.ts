@@ -20,6 +20,9 @@ const db = getFirestore(firebaseApp)
 const usersRef = collection(db, 'users')
 const postsRef = collection(db, 'posts')
 const followsRef = collection(db, 'follows')
+const followingRef = collection(db, 'following')
+const likesRef = collection(db, 'likes')
+
 
 const fetchProfile = async (uid: string): Promise<IProfile> => {
   const userDoc = doc(usersRef, uid)
@@ -69,4 +72,4 @@ const likePost = async (postId: string, userId: string) => {
   }
 }
 
-export { usersRef, followsRef, postsRef, fetchProfile, fetchPost, fetchFollow, likePost }
+export { usersRef, followsRef, followingRef, likesRef, postsRef, fetchProfile, fetchPost, fetchFollow, likePost, db}
