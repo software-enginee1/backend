@@ -1,7 +1,32 @@
-<script setup>
+<script>
+import { ref, defineComponent, onMounted } from 'vue'
 import { useCurrentUser } from 'vuefire'
+import { db } from '@/plugins/firebaseDB'
+import { collection, getDocs } from 'firebase/firestore'
 
-const user = useCurrentUser()
+export default defineComponent({
+  setup() {
+    const user = useCurrentUser();
+    const userCount = ref(0);
+    const allusers = ref(0);
+
+    async function queryCollection(){
+      const collectionRef = collection(db, 'users')
+      const users = await getDocs(collectionRef)
+      allusers.value =
+      userCount.value = users.size;
+    }
+
+    onMounted(() => {
+      // getUserCount();
+      queryCollection();
+    });
+    return {
+      user,
+      userCount
+    };
+  },
+});
 </script>
 
 <template>
@@ -18,6 +43,7 @@ const user = useCurrentUser()
           <div v-else class="alert alert-danger" role="alert">You are not logged in!</div>
         </div>
       </div>
+      <p>  Total user count: {{ userCount}}</p>
     </div>
   </div>
 </template>
