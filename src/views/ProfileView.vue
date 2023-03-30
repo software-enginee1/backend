@@ -7,7 +7,6 @@ import { db } from '@/firebase'
 // import UserPost from '@/components/UserPost.vue'
 import { collection, query, where, getDocs } from 'firebase/firestore'
 
-
 export default defineComponent({
   components: { CreatePost },
   // components: { UserPost },
@@ -35,7 +34,6 @@ export default defineComponent({
       }
       return ''
     })
-
 
     async function getFollowerCount() {
       try {
@@ -120,34 +118,32 @@ export default defineComponent({
 })
 </script>
 
-
 <template>
-  <div class='white-container'>
+  <div class="white-container">
     <div>
-
-      <div class='card'>
-        <div class='card-header'>{{ user.displayName }}</div>
-        <div class='card-body'>
+      <div class="card">
+        <div class="card-header">{{ user.displayName }}</div>
+        <div class="card-body">
           <!--          <div class='bio'> {{ user.metadata.bio }}</div>-->
-          <div class='register-date'>
-            <img src='@/assets/calendar.png' alt='calendar' width='25' height='25'>
-            <p> Joined {{ stringJoinedDate }} </p>
+          <div class="register-date">
+            <img src="@/assets/calendar.png" alt="calendar" width="25" height="25" />
+            <p>Joined {{ stringJoinedDate }}</p>
           </div>
-          <div class='followers'>
-            <h1> {{ userUid }}</h1>
-            <p> {{ followerCount }} Followers {{ follow }}</p>
+          <div class="followers">
+            <h1>{{ userUid }}</h1>
+            <p>{{ followerCount }} Followers {{ follow }}</p>
             <!--            <p> {{ userCount }} total user count {{ userCount2 }}</p>-->
           </div>
         </div>
       </div>
 
-      <div class='create-post'>
-        <div class='post-box'>
+      <div class="create-post">
+        <div class="post-box">
           <CreatePost />
         </div>
       </div>
 
-      <div class='posts'>
+      <div class="posts">
         <!--            <div v-for='post in posts' :key='post.id'>-->
         <!--              <UserPost-->
         <!--                :author='post.user'-->
@@ -178,5 +174,4 @@ export default defineComponent({
   align-items: center;
   gap: 1rem;
 }
-
 </style>

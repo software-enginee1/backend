@@ -1,6 +1,5 @@
-<script lang='ts'>
+<script lang="ts">
 import { defineComponent, computed, ref } from 'vue'
-
 
 export default defineComponent({
   props: {
@@ -23,37 +22,34 @@ export default defineComponent({
   },
   setup(props) {
     const stringPostedDate = computed(() => {
-      return JSON.stringify(props.date).substring(5, 17);
-    });
+      return JSON.stringify(props.date).substring(5, 17)
+    })
 
-    const liking = ref(false);
+    const liking = ref(false)
     function toggleLike() {
-      liking.value = !liking.value;
+      liking.value = !liking.value
     }
     return {
       stringPostedDate,
       liking,
-      toggleLike,
-
-    };
+      toggleLike
+    }
   }
 })
 </script>
 
-
-
 <template>
-  <div class='post'>
+  <div class="post">
     <div class="post-left">
-      <div class='post-head'>
-        <div class='username'>{{ author }} {{ stringPostedDate }} </div>
+      <div class="post-head">
+        <div class="username">{{ author }} {{ stringPostedDate }}</div>
       </div>
-      <div class='post-content'>{{ content }} </div>
-      <div class='post-likes'> {{ likes }} </div>
+      <div class="post-content">{{ content }}</div>
+      <div class="post-likes">{{ likes }}</div>
     </div>
-    <div class='like-button'>
-      <button class='liked' @click='toggleLike'>
-        <img :src="liking ? '@/assets/liked.png' : '@/assets/unliked.png'"/>
+    <div class="like-button">
+      <button class="liked" @click="toggleLike">
+        <img :src="liking ? '@/assets/liked.png' : '@/assets/unliked.png'" />
       </button>
     </div>
   </div>
@@ -109,4 +105,3 @@ export default defineComponent({
   height: 50px;
 }
 </style>
-

@@ -6,27 +6,26 @@ import { collection, getDocs } from 'firebase/firestore'
 
 export default defineComponent({
   setup() {
-    const user = useCurrentUser();
-    const userCount = ref(0);
-    const allusers = ref(0);
+    const user = useCurrentUser()
+    const userCount = ref(0)
+    const allusers = ref(0)
 
-    async function queryCollection(){
+    async function queryCollection() {
       const collectionRef = collection(db, 'users')
       const users = await getDocs(collectionRef)
-      allusers.value =
-      userCount.value = users.size;
+      allusers.value = userCount.value = users.size
     }
 
     onMounted(() => {
       // getUserCount();
-      queryCollection();
-    });
+      queryCollection()
+    })
     return {
       user,
       userCount
-    };
-  },
-});
+    }
+  }
+})
 </script>
 
 <template>
@@ -43,7 +42,7 @@ export default defineComponent({
           <div v-else class="alert alert-danger" role="alert">You are not logged in!</div>
         </div>
       </div>
-      <p>  Total user count: {{ userCount}}</p>
+      <p>Total user count: {{ userCount }}</p>
     </div>
   </div>
 </template>
