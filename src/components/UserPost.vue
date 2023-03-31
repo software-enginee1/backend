@@ -1,5 +1,7 @@
 <script lang='ts'>
 import { defineComponent, computed, ref } from 'vue'
+import liked from '@/assets/liked.png'
+import unliked from '@/assets/unliked.png'
 
 
 export default defineComponent({
@@ -23,17 +25,28 @@ export default defineComponent({
   },
   setup(props) {
     const stringPostedDate = computed(() => {
-      return JSON.stringify(props.date).substring(5, 17);
+      return JSON.stringify(props.date).replace(/['"]+/g, '');
     });
 
     const liking = ref(false);
     function toggleLike() {
       liking.value = !liking.value;
+      console.log(liking.value)
     }
+
+    const imagePath = computed(() => {
+      if (!liking.value) {
+        return unliked;
+      } else {
+        return liked;
+      }
+    });
+
     return {
       stringPostedDate,
       liking,
       toggleLike,
+      imagePath,
 
     };
   }
@@ -46,14 +59,14 @@ export default defineComponent({
   <div class='post'>
     <div class="post-left">
       <div class='post-head'>
-        <div class='username'>{{ author }} {{ stringPostedDate }} </div>
+        <div class='username'>@{{ author }} {{ stringPostedDate }} </div>
       </div>
       <div class='post-content'>{{ content }} </div>
-      <div class='post-likes'> {{ likes }} </div>
+      <div class='post-likes'>Likes: {{ likes }} </div>
     </div>
     <div class='like-button'>
-      <button class='liked' @click='toggleLike'>
-        <img :src="liking ? '@/assets/liked.png' : '@/assets/unliked.png'"/>
+      <button class='liked' @click='toggleLike()'>
+        <img :src="imagePath"/>
       </button>
     </div>
   </div>
@@ -64,10 +77,11 @@ export default defineComponent({
   display: flex;
   justify-content: space-between;
   background-color: white;
-  border: 1px solid black;
   border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   padding: 10px;
-  margin-bottom: 10px;
+  margin-top: 10px;
+
 }
 
 .post-left {
