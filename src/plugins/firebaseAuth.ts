@@ -33,7 +33,7 @@ const register = async (name: string, email: string, password: string) => {
     displayName: name
   })
 
-  await setDoc(doc(usersRef, userCredential.user.uid), { name: name })
+  await setDoc(doc(usersRef, userCredential.user.uid), { name: name.toLowerCase() })
 }
 
 export { login, logout, register }
