@@ -16,8 +16,8 @@ app.use(VueFire, {
   firebaseApp,
   modules: [
     VueFireAuth(),
-    VueFireFirestoreOptionsAPI(),
-    VueFireDatabaseOptionsAPI()
+    // VueFireFirestoreOptionsAPI(),
+    // VueFireDatabaseOptionsAPI()
   ]
 
 })
