@@ -4,8 +4,7 @@ import { useCurrentUser } from 'vuefire'
 import CreatePost from '@/components/CreatePost.vue'
 import UserPost from '@/components/UserPost.vue'
 import { db } from '@/firebase'
-import { collection,getDocs } from 'firebase/firestore'
-
+import { collection, getDocs } from 'firebase/firestore'
 
 export default defineComponent({
   components: {
@@ -72,9 +71,8 @@ export default defineComponent({
         const postRef = collection(db, 'users', userUid.value, 'posts')
         console.log('postRef:', postRef)
         const postsSnap = await getDocs(postRef)
-        posts.value = postsSnap.docs.map(docSnap => docSnap.data())
+        posts.value = postsSnap.docs.map((docSnap) => docSnap.data())
         console.log('posts: ', posts.value)
-
       } catch (error) {
         console.log(error)
       }
@@ -85,7 +83,6 @@ export default defineComponent({
         const timeStr = date.toLocaleTimeString()
         return `${dateStr} ${timeStr}`
       }
-
     }
 
     onMounted(() => {
@@ -110,38 +107,36 @@ export default defineComponent({
 })
 </script>
 
-
 <template>
-  <div class='white-container'>
+  <div class="white-container">
     <div>
-
-      <div class='card'>
-        <div class='card-header'>{{ user.displayName }}</div>
-        <div class='card-body'>
-          <div class='bio'> {{ bio }}</div>
-          <div class='register-date'>
-            <img src='@/assets/calendar.png' alt='calendar' width='25' height='25'>
-            <p> Joined {{ stringJoinedDate }} </p>
+      <div class="card">
+        <div class="card-header">{{ user.displayName }}</div>
+        <div class="card-body">
+          <div class="bio">{{ bio }}</div>
+          <div class="register-date">
+            <img src="@/assets/calendar.png" alt="calendar" width="25" height="25" />
+            <p>Joined {{ stringJoinedDate }}</p>
           </div>
-          <div class='followers'>
-            <p> {{ followerCount }} Followers {{ followingCount }} Following</p>
+          <div class="followers">
+            <p>{{ followerCount }} Followers {{ followingCount }} Following</p>
           </div>
         </div>
       </div>
 
-      <div class='create-post'>
-        <div class='post-box'>
+      <div class="create-post">
+        <div class="post-box">
           <CreatePost />
         </div>
       </div>
 
-      <div class='posts'>
-        <div v-for='post in posts' :key='post.id'>
+      <div class="posts">
+        <div v-for="post in posts" :key="post.id">
           <UserPost
-            :author='user.displayName'
-            :date='formatDate(post.dateposted.toDate())'
-            :content='post.content'
-            :likes='post.likes'
+            :author="user.displayName"
+            :date="formatDate(post.dateposted.toDate())"
+            :content="post.content"
+            :likes="post.likes"
           />
         </div>
       </div>
@@ -151,20 +146,19 @@ export default defineComponent({
 
 <style scoped>
 .white-container {
-    background-color: white;
-    color: black;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-    width: 85%;
-    margin: 0 auto;
-    min-height: 100vh;
+  background-color: white;
+  color: black;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  width: 85%;
+  margin: 0 auto;
+  min-height: 100vh;
 }
 
 .register-date {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
-
 </style>
