@@ -1,50 +1,48 @@
-<script lang='ts'>
+<script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { db } from '@/firebase'
 
 export default defineComponent({
   setup() {
-    const postContent = ref("");
+    const postContent = ref('')
 
     async function createPost() {
-      const timestamp = Date.now();
+      const timestamp = Date.now()
 
       const postData = {
         content: postContent.value,
         dateposted: timestamp,
-        likes: 0,
-      };
+        likes: 0
+      }
 
       try {
         const filler = db
-
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
-    };
+    }
 
     return {
       postContent,
-      createPost,
-    };
+      createPost
     }
+  }
 })
 </script>
 
 <template>
-  <div class='create-post'>
-    <div class='create-post-header'>
-    </div>
-    <div class='create-post-body'>
+  <div class="create-post">
+    <div class="create-post-header"></div>
+    <div class="create-post-body">
       <textarea
-        v-model='postContent'
+        v-model="postContent"
         class="typing-box"
-        placeholder='What is on your mind?'
-        style='resize:none;'
+        placeholder="What is on your mind?"
+        style="resize: none"
       />
-      <div class='button-wrapper'>
-        <button class='submit-button' @click='createPost'>
-          <img src='@/assets/feather.png'/>
+      <div class="button-wrapper">
+        <button class="submit-button" @click="createPost">
+          <img src="@/assets/feather.png" />
         </button>
       </div>
     </div>
@@ -60,11 +58,11 @@ export default defineComponent({
   padding: 20px;
   margin-top: 20px;
 }
-.typing-box{
-    width: 100%;
-    resize: none;
+.typing-box {
+  width: 100%;
+  resize: none;
 }
-.button-wrapper{
+.button-wrapper {
   display: flex;
   justify-content: flex-end;
   /*margin-top: 1rem;*/

@@ -6,19 +6,17 @@ import { collection, doc, getDocs, query, where } from 'firebase/firestore'
 
 export default defineComponent({
   setup() {
-    const user = useCurrentUser();
-    const posts = ref([]);
-
+    const user = useCurrentUser()
+    const posts = ref([])
 
     onMounted(() => {
       // getUserCount();
-
-    });
+    })
     return {
-      user,
-    };
-  },
-});
+      user
+    }
+  }
+})
 </script>
 
 <template>
