@@ -3,7 +3,7 @@ import { useCurrentUser } from 'vuefire'
 import { logout } from '@/plugins/firebaseAuth'
 import { useRouter } from 'vue-router'
 import { UserCircleIcon, XCircleIcon } from '@heroicons/vue/24/outline'
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import SearchBar from '@/components/SearchBar.vue'
 
 const router = useRouter()
@@ -13,6 +13,7 @@ router.beforeEach(() => {
 })
 
 const user = useCurrentUser()
+const username = computed(() => (user.value ? user.value.displayName : ''))
 const Logout = async () =>
   logout()
     .then(() => {
@@ -49,7 +50,7 @@ const Logout = async () =>
           <SearchBar v-if="user" />
           <router-link to="/" class="link"> Home </router-link>
           <router-link to="/post" class="link" v-if="user"> Post </router-link>
-          <router-link to="/profile" v-if="user">
+          <router-link v-if="user && username" :to="`/profile/${username}`">
             <UserCircleIcon class="h-8 w-8 link" />
           </router-link>
           <div
@@ -68,7 +69,7 @@ const Logout = async () =>
           <SearchBar v-if="user" class="mb-10" />
           <router-link to="/" class="link link-mobile"> Home </router-link>
           <router-link to="/post" class="link link-mobile" v-if="user"> Post </router-link>
-          <router-link to="/profile" v-if="user" class="link link-mobile"> Profile </router-link>
+          <router-link to="/profile/" v-if="user" class="link link-mobile"> Profile </router-link>
           <div
             @click="user ? Logout() : router.push('/register')"
             class="inline-block cursor-pointer text-lg px-6 py-4 leading-none border rounded text-white border-white hover:border-transparent hover:text-indigo-500 hover:bg-white mt-4 md:mt-0"

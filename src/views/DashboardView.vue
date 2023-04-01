@@ -1,7 +1,22 @@
-<script setup>
+<script>
+import { ref, defineComponent, onMounted } from 'vue'
 import { useCurrentUser } from 'vuefire'
+import { db } from '@/firebase'
+import { collection, doc, getDocs, query, where } from 'firebase/firestore'
 
-const user = useCurrentUser()
+export default defineComponent({
+  setup() {
+    const user = useCurrentUser()
+    const posts = ref([])
+
+    onMounted(() => {
+      // getUserCount();
+    })
+    return {
+      user
+    }
+  }
+})
 </script>
 
 <template>
