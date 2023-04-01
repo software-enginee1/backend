@@ -8,6 +8,7 @@ import {
 import { doc, setDoc, collection, addDoc } from 'firebase/firestore'
 import { usersRef } from '@/plugins/firebaseDB'
 import { useFirebaseAuth } from 'vuefire'
+import { Timestamp } from '@firebase/firestore'
 
 const auth = useFirebaseAuth()
 
@@ -35,7 +36,8 @@ const register = async (name: string, email: string, password: string) => {
 
   await setDoc(doc(usersRef, userCredential.user.uid), {
     name: name,
-    email: email
+    email: email,
+    joined: Timestamp.fromDate(new Date())
   })
 
   const postsRef = collection(usersRef, userCredential.user.uid, 'posts')
