@@ -2,37 +2,120 @@
 import { ref, defineComponent, onMounted } from 'vue'
 import { useCurrentUser } from 'vuefire'
 import { db } from '@/firebase'
-import { collection, doc, getDocs, query, where } from 'firebase/firestore'
+import { collection, getDocs, query, where } from 'firebase/firestore'
+import UserPost from '@/components/UserPost.vue'
+import CreatePost from '@/components/CreatePost.vue'
 
 export default defineComponent({
+  components: { CreatePost, UserPost },
   setup() {
     const user = useCurrentUser()
-    const posts = ref([])
+    const displayPosts = ref([])
+    const userRef = collection(db, 'users')
+    const following = ref([])
+    const userUid = ref('')
+    let formatDate = ref('')
+
+    async function getFollowingPosts() {
+      if (user.value) {
+        try {
+          const userQuery = query(userRef, where('name', '==', user.value.displayName))
+          const userSnap = await getDocs(userQuery)
+          if (!userSnap.empty) {
+            const userDoc = userSnap.docs[0]
+            userUid.value = userDoc.id
+          }
+          //getting users you follow
+          const followingRef = collection(db, 'users', userUid.value, 'following')
+          const followingSnap = await getDocs(followingRef)
+          following.value = followingSnap.docs
+            .map((doc) => doc.data())
+            .filter((data) => Object.keys(data).length !== 0)
+          console.log(following.value)
+
+          //getting posts from users you follow
+          for (let i = 0; i < following.value.length; i++) {
+            const followedUser = following.value[i].username
+            const userQuery = query(userRef, where('name', '==', followedUser))
+            const userSnap = await getDocs(userQuery)
+            const postsRef = collection(db, 'users', userSnap.docs[0].id, 'posts')
+            const postsSnap = await getDocs(postsRef)
+            const posts = postsSnap.docs
+              .map((doc) => ({ ...doc.data(), author: followedUser }))
+              .filter((data) => Object.keys(data).length !== 1)
+            displayPosts.value = [...displayPosts.value, ...posts]
+            console.log('user post:', displayPosts.value)
+          }
+          displayPosts.value.sort((a, b) => b.dateposted.toDate() - a.dateposted.toDate())
+          console.log('user post:', displayPosts.value)
+        } catch (error) {
+          console.log(error)
+        }
+      }
+    }
 
     onMounted(() => {
-      // getUserCount();
+      formatDate.value = (date) => {
+        if (!date) return ''
+        const options = { day: 'numeric', month: 'numeric', year: 'numeric' }
+        const dateStr = date.toLocaleDateString('en-US', options)
+        const timeStr = date.toLocaleTimeString()
+        return `${dateStr} ${timeStr}`
+      }
+      getFollowingPosts()
     })
     return {
-      user
+      user,
+      displayPosts,
+      formatDate
     }
   }
 })
 </script>
 
 <template>
-  <div class="container">
+  <div class="white-container">
     <div class="row justify-content-center">
       <div class="col-md-8">
         <div class="card">
-          <div v-if="user">
-            <div class="card-header">Welcome, {{ user.displayName }}</div>
-            <div class="card-body">
-              <div class="alert alert-success" role="alert">You are logged in!</div>
+          <h1 class="home">Home</h1>
+          <div class="create-post">
+            <div class="post-box">
+              <CreatePost />
             </div>
           </div>
-          <div v-else class="alert alert-danger" role="alert">You are not logged in!</div>
+          <div class="posts">
+            <div v-for="post in displayPosts" :key="post.id">
+              <UserPost
+                :author="post.author"
+                :date="formatDate(post.dateposted.toDate())"
+                :content="post.content"
+                :likes="post.likes"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
+
+<style scoped>
+.white-container {
+  background-color: white;
+  color: black;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  width: 85%;
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+.home {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+</style>
