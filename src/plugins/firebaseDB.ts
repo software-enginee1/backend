@@ -23,7 +23,6 @@ const followsRef = collection(db, 'follows')
 const followingRef = collection(db, 'following')
 const likesRef = collection(db, 'likes')
 
-
 const fetchProfile = async (uid: string): Promise<IProfile> => {
   const userDoc = doc(usersRef, uid)
   const snapshot = await getDoc(userDoc)
@@ -72,4 +71,15 @@ const likePost = async (postId: string, userId: string) => {
   }
 }
 
-export { usersRef, followsRef, followingRef, likesRef, postsRef, fetchProfile, fetchPost, fetchFollow, likePost, db}
+export {
+  usersRef,
+  followsRef,
+  followingRef,
+  likesRef,
+  postsRef,
+  fetchProfile,
+  fetchPost,
+  fetchFollow,
+  likePost,
+  db
+}

@@ -1,11 +1,10 @@
 <script>
-import { defineComponent, computed, onMounted, ref } from 'vue'
-import { useCurrentUser } from 'vuefire'
+import { defineComponent, onBeforeMount, ref } from 'vue'
 import CreatePost from '@/components/CreatePost.vue'
 import UserPost from '@/components/UserPost.vue'
 import { db } from '@/firebase'
-import { collection,getDocs } from 'firebase/firestore'
-
+import { collection, getDocs, query, where } from 'firebase/firestore'
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
   components: {
@@ -14,28 +13,40 @@ export default defineComponent({
   },
 
   setup() {
-    const user = useCurrentUser()
+    const route = useRoute()
+    const username = route.params.username
+    const user = ref({})
+    const userJoinedDate = ref(null)
+    const userUid = ref('')
     const bio = ref('')
     const followerCount = ref(0)
     const followingCount = ref(0)
-    const userCount = ref(0)
-    const userCount2 = ref(0)
     let posts = ref([])
     let formatDate = ref('')
 
-    const stringJoinedDate = computed(() => {
-      if (user.value && user.value.metadata.creationTime) {
-        return JSON.stringify(user.value.metadata.creationTime).substring(5, 17)
+    async function getUser(username) {
+      try {
+        const collectionRef = collection(db, 'users')
+        const userQuery = query(collectionRef, where('name', '==', username))
+        const userSnap = await getDocs(userQuery)
+        if (!userSnap.empty) {
+          const userDoc = userSnap.docs[0]
+          user.value = userDoc.data()
+          console.log(user)
+          userUid.value = userDoc.id
+          userJoinedDate.value = user.value.joined.toDate().toLocaleDateString('en-US')
+          console.log('userJoinedDate: ', userJoinedDate.value)
+          getUserBio()
+          getFollowerCount()
+          getFollowingCount()
+          fetchUserPosts()
+        } else {
+          console.log('user not found')
+        }
+      } catch (error) {
+        console.log(error)
       }
-      return ''
-    })
-    const userUid = computed(() => {
-      if (user.value && user.value.uid) {
-        return JSON.stringify(user.value.uid).replace(/['"]+/g, '')
-      }
-      return ''
-    })
-    console.log(typeof userUid.value)
+    }
 
     async function getUserBio() {
       try {
@@ -72,9 +83,8 @@ export default defineComponent({
         const postRef = collection(db, 'users', userUid.value, 'posts')
         console.log('postRef:', postRef)
         const postsSnap = await getDocs(postRef)
-        posts.value = postsSnap.docs.map(docSnap => docSnap.data())
+        posts.value = postsSnap.docs.map((docSnap) => docSnap.data())
         console.log('posts: ', posts.value)
-
       } catch (error) {
         console.log(error)
       }
@@ -85,23 +95,18 @@ export default defineComponent({
         const timeStr = date.toLocaleTimeString()
         return `${dateStr} ${timeStr}`
       }
-
     }
 
-    onMounted(() => {
-      fetchUserPosts()
-      getUserBio()
-      getFollowerCount()
-      getFollowingCount()
+    onBeforeMount(async () => {
+      await getUser(username)
     })
+
     return {
       user,
       bio,
-      stringJoinedDate,
+      userJoinedDate,
       userUid,
       followerCount,
-      userCount,
-      userCount2,
       posts,
       formatDate,
       followingCount
@@ -110,38 +115,36 @@ export default defineComponent({
 })
 </script>
 
-
 <template>
-  <div class='white-container'>
+  <div class="white-container">
     <div>
-
-      <div class='card'>
-        <div class='card-header'>{{ user.displayName }}</div>
-        <div class='card-body'>
-          <div class='bio'> {{ bio }}</div>
-          <div class='register-date'>
-            <img src='@/assets/calendar.png' alt='calendar' width='25' height='25'>
-            <p> Joined {{ stringJoinedDate }} </p>
+      <div class="card">
+        <div class="card-header">{{ user.name }}</div>
+        <div class="card-body">
+          <div class="bio">{{ bio }}</div>
+          <div class="register-date">
+            <img src="@/assets/calendar.png" alt="calendar" />
+            <p>Joined {{ userJoinedDate }}</p>
           </div>
-          <div class='followers'>
-            <p> {{ followerCount }} Followers {{ followingCount }} Following</p>
+          <div class="followers">
+            <p>{{ followerCount }} Followers {{ followingCount }} Following</p>
           </div>
         </div>
       </div>
 
-      <div class='create-post'>
-        <div class='post-box'>
+      <div class="create-post">
+        <div class="post-box">
           <CreatePost />
         </div>
       </div>
 
-      <div class='posts'>
-        <div v-for='post in posts' :key='post.id'>
+      <div class="posts">
+        <div v-for="post in posts" :key="post.id">
           <UserPost
-            :author='user.displayName'
-            :date='formatDate(post.dateposted.toDate())'
-            :content='post.content'
-            :likes='post.likes'
+            :author="user.name"
+            :date="formatDate(post.dateposted.toDate())"
+            :content="post.content"
+            :likes="post.likes"
           />
         </div>
       </div>
@@ -151,20 +154,24 @@ export default defineComponent({
 
 <style scoped>
 .white-container {
-    background-color: white;
-    color: black;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-    width: 85%;
-    margin: 0 auto;
-    min-height: 100vh;
+  background-color: white;
+  color: black;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  width: 85%;
+  margin: 0 auto;
+  min-height: 100vh;
 }
 
 .register-date {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
+.register-date img {
+  width: 25px;
+  height: 25px;
+}
 </style>

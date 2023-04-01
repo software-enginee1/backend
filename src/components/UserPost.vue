@@ -1,8 +1,7 @@
-<script lang='ts'>
+<script lang="ts">
 import { defineComponent, computed, ref } from 'vue'
 import liked from '@/assets/liked.png'
 import unliked from '@/assets/unliked.png'
-
 
 export default defineComponent({
   props: {
@@ -25,48 +24,45 @@ export default defineComponent({
   },
   setup(props) {
     const stringPostedDate = computed(() => {
-      return JSON.stringify(props.date).replace(/['"]+/g, '');
-    });
+      return JSON.stringify(props.date).replace(/['"]+/g, '')
+    })
 
-    const liking = ref(false);
+    const liking = ref(false)
     function toggleLike() {
-      liking.value = !liking.value;
+      liking.value = !liking.value
       console.log(liking.value)
     }
 
     const imagePath = computed(() => {
       if (!liking.value) {
-        return unliked;
+        return unliked
       } else {
-        return liked;
+        return liked
       }
-    });
+    })
 
     return {
       stringPostedDate,
       liking,
       toggleLike,
-      imagePath,
-
-    };
+      imagePath
+    }
   }
 })
 </script>
 
-
-
 <template>
-  <div class='post'>
+  <div class="post">
     <div class="post-left">
-      <div class='post-head'>
-        <div class='username'>@{{ author }} {{ stringPostedDate }} </div>
+      <div class="post-head">
+        <div class="username">@{{ author }} {{ stringPostedDate }}</div>
       </div>
-      <div class='post-content'>{{ content }} </div>
-      <div class='post-likes'>Likes: {{ likes }} </div>
+      <div class="post-content">{{ content }}</div>
+      <div class="post-likes">Likes: {{ likes }}</div>
     </div>
-    <div class='like-button'>
-      <button class='liked' @click='toggleLike()'>
-        <img :src="imagePath"/>
+    <div class="like-button">
+      <button class="liked" @click="toggleLike()">
+        <img :src="imagePath" />
       </button>
     </div>
   </div>
@@ -81,7 +77,6 @@ export default defineComponent({
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
   padding: 10px;
   margin-top: 10px;
-
 }
 
 .post-left {
@@ -123,4 +118,3 @@ export default defineComponent({
   height: 50px;
 }
 </style>
-
