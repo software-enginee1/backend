@@ -36,8 +36,7 @@ const register = async (name: string, email: string, password: string) => {
 
   await setDoc(doc(usersRef, userCredential.user.uid), {
     name: name,
-    email: email,
-    joined: Timestamp.fromDate(new Date())
+    email: email
   })
 
   const postsRef = collection(usersRef, userCredential.user.uid, 'posts')
