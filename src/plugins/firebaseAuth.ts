@@ -8,6 +8,7 @@ import {
 import { doc, setDoc, collection, addDoc } from 'firebase/firestore'
 import { usersRef } from '@/plugins/firebaseDB'
 import { useFirebaseAuth } from 'vuefire'
+import { Timestamp } from '@firebase/firestore'
 
 const auth = useFirebaseAuth()
 
