@@ -9,12 +9,15 @@ import {
   updateDoc,
   increment,
   arrayUnion,
-  arrayRemove
+  arrayRemove,
+  addDoc,
+  FieldValue
 } from 'firebase/firestore'
 import { firebaseApp } from '@/firebase'
 import type { IProfile } from '@/models/profile.model'
 import type { IPost } from '@/models/post.model'
 import type { IFollow } from '@/models/follow.model'
+import type { Timestamp } from '@firebase/firestore'
 
 const db = getFirestore(firebaseApp)
 const usersRef = collection(db, 'users')
@@ -69,6 +72,15 @@ const likePost = async (postId: string, userId: string) => {
     await updateDoc(postDoc, { likesCount: increment(1) })
     await updateDoc(userDoc, { likes: arrayUnion(postId) })
   }
+}
+
+const addPost = async (content: string, dateposted: Timestamp, likes: number, user: string) => {
+  await addDoc(postsRef, {
+    content: content,
+    dateposted: dateposted,
+    likes: likes,
+    user: user
+  })
 }
 
 export {

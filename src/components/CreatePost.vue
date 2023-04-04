@@ -1,13 +1,26 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { db } from '@/firebase'
+import { collection, addDoc } from 'firebase/firestore'
+import { useCurrentUser } from 'vuefire'
 
 export default defineComponent({
+  props: {
+    user: Object
+  },
   setup() {
     const postContent = ref('')
+    const user = useCurrentUser()
 
     async function createPost() {
-      const timestamp = Date.now()
+      console.log('createPost called')
+
+      if (!user.value) {
+        alert('You must be logged in to create a post')
+        return
+      }
+
+      const timestamp = new Date()
 
       const postData = {
         content: postContent.value,
@@ -15,10 +28,15 @@ export default defineComponent({
         likes: 0
       }
 
+      console.log('postData:', postData)
+
       try {
-        const filler = db
+        const userPostsRef = collection(db, 'users', user.value.uid, 'posts')
+        const docRef = await addDoc(userPostsRef, postData)
+        console.log('Document written with ID:', docRef.id)
+        postContent.value = ''
       } catch (error) {
-        console.log(error)
+        console.log('Error creating post:', error)
       }
     }
 

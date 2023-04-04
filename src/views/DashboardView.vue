@@ -25,7 +25,7 @@ export default defineComponent({
             const userDoc = userSnap.docs[0]
             userUid.value = userDoc.id
           }
-          //getting users you follow
+          // getting users you follow
           const followingRef = collection(db, 'users', userUid.value, 'following')
           const followingSnap = await getDocs(followingRef)
           following.value = followingSnap.docs
@@ -33,7 +33,7 @@ export default defineComponent({
             .filter((data) => Object.keys(data).length !== 0)
           console.log(following.value)
 
-          //getting posts from users you follow
+          // getting posts from users you follow
           for (let i = 0; i < following.value.length; i++) {
             const followedUser = following.value[i].username
             const userQuery = query(userRef, where('name', '==', followedUser))
@@ -46,6 +46,16 @@ export default defineComponent({
             displayPosts.value = [...displayPosts.value, ...posts]
             console.log('user post:', displayPosts.value)
           }
+
+          // getting your own posts
+          const myPostsRef = collection(db, 'users', userUid.value, 'posts')
+          const myPostsSnap = await getDocs(myPostsRef)
+          const myPosts = myPostsSnap.docs
+            .map((doc) => ({ ...doc.data(), author: user.value.displayName }))
+            .filter((data) => Object.keys(data).length !== 1)
+          displayPosts.value = [...displayPosts.value, ...myPosts]
+          console.log('my posts:', myPosts)
+
           displayPosts.value.sort((a, b) => b.dateposted.toDate() - a.dateposted.toDate())
           console.log('user post:', displayPosts.value)
         } catch (error) {
@@ -81,7 +91,7 @@ export default defineComponent({
           <h1 class="home">Home</h1>
           <div class="create-post">
             <div class="post-box">
-              <CreatePost />
+              <CreatePost :user="user" />
             </div>
           </div>
           <div class="posts">
