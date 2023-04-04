@@ -1,7 +1,8 @@
 <script lang="ts">
-import { defineComponent, computed, ref } from 'vue'
+import { defineComponent, computed, ref, watch } from 'vue'
 import liked from '@/assets/liked.png'
 import unliked from '@/assets/unliked.png'
+import { likePost } from '@/plugins/firebaseDB'
 
 export default defineComponent({
   props: {
@@ -20,6 +21,14 @@ export default defineComponent({
     likes: {
       type: Number,
       required: true
+    },
+    postId: {
+      type: String,
+      required: true
+    },
+    userId: {
+      type: String,
+      required: true
     }
   },
   setup(props) {
@@ -28,18 +37,26 @@ export default defineComponent({
     })
 
     const liking = ref(false)
-    function toggleLike() {
+
+    async function toggleLike() {
+      await likePost(props.postId, props.userId)
       liking.value = !liking.value
       console.log(liking.value)
     }
 
     const imagePath = computed(() => {
       if (!liking.value) {
-        return unliked
-      } else {
         return liked
+      } else {
+        return unliked
       }
     })
+    watch(
+      () => props.likes,
+      (newLikes) => {
+        console.log('Likes in UserPost component:', newLikes)
+      }
+    )
 
     return {
       stringPostedDate,
@@ -95,6 +112,7 @@ export default defineComponent({
   margin-bottom: 10px;
   color: #181818;
 }
+
 .post-likes {
   color: #181818;
 }

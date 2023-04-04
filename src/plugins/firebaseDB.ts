@@ -11,6 +11,8 @@ import {
   arrayUnion,
   arrayRemove,
   addDoc,
+  setDoc,
+  deleteDoc,
   FieldValue
 } from 'firebase/firestore'
 import { firebaseApp } from '@/firebase'
@@ -22,9 +24,9 @@ import type { Timestamp } from '@firebase/firestore'
 const db = getFirestore(firebaseApp)
 const usersRef = collection(db, 'users')
 const postsRef = collection(db, 'posts')
+const isAlreadyLikePost = false
 const followsRef = collection(db, 'follows')
 const followingRef = collection(db, 'following')
-const likesRef = collection(db, 'likes')
 
 const fetchProfile = async (uid: string): Promise<IProfile> => {
   const userDoc = doc(usersRef, uid)
@@ -59,35 +61,27 @@ const fetchFollow = async (userId: string): Promise<IFollow[]> => {
 
 const likePost = async (postId: string, userId: string) => {
   const profile = await fetchProfile(userId)
-  const isAlreadyLikePost = profile.likes?.includes(postId) ?? false
-
+  const postsRef = collection(db, 'users', userId, 'posts')
   const postDoc = doc(postsRef, postId)
   const userDoc = doc(usersRef, userId)
 
+  const likeDoc = doc(userDoc, 'likedPosts', postId)
+  const likedPostSnap = await getDoc(likeDoc)
+  const isAlreadyLikePost = likedPostSnap.exists()
   if (isAlreadyLikePost) {
     // if user already liked the post, unlike it
-    await updateDoc(postDoc, { likesCount: increment(-1) })
-    await updateDoc(userDoc, { likes: arrayRemove(postId) })
+    await updateDoc(postDoc, { likes: increment(-1) })
+    await deleteDoc(likeDoc)
   } else {
-    await updateDoc(postDoc, { likesCount: increment(1) })
-    await updateDoc(userDoc, { likes: arrayUnion(postId) })
+    await updateDoc(postDoc, { likes: increment(1) })
+    await setDoc(likeDoc, { postId })
   }
-}
-
-const addPost = async (content: string, dateposted: Timestamp, likes: number, user: string) => {
-  await addDoc(postsRef, {
-    content: content,
-    dateposted: dateposted,
-    likes: likes,
-    user: user
-  })
 }
 
 export {
   usersRef,
   followsRef,
   followingRef,
-  likesRef,
   postsRef,
   fetchProfile,
   fetchPost,

@@ -91,16 +91,18 @@ export default defineComponent({
           <h1 class="home">Home</h1>
           <div class="create-post">
             <div class="post-box">
-              <CreatePost :user="user" />
+              <CreatePost />
             </div>
           </div>
           <div class="posts">
-            <div v-for="post in displayPosts" :key="post.id">
+            <div v-for="post in displayPosts" :key="post.postId">
               <UserPost
                 :author="post.author"
                 :date="formatDate(post.dateposted.toDate())"
                 :content="post.content"
                 :likes="post.likes"
+                :post-id="post.postId"
+                :user-id="post.userId"
               />
             </div>
           </div>

@@ -145,6 +145,8 @@ export default defineComponent({
             :date="formatDate(post.dateposted.toDate())"
             :content="post.content"
             :likes="post.likes"
+            :postId="post.id"
+            :userId="userUid"
           />
         </div>
       </div>
