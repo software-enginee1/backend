@@ -8,25 +8,18 @@ import {
   where,
   updateDoc,
   increment,
-  arrayUnion,
-  arrayRemove,
-  addDoc,
   setDoc,
-  deleteDoc,
-  FieldValue
+  deleteDoc
 } from 'firebase/firestore'
 import { firebaseApp } from '@/firebase'
 import type { IProfile } from '@/models/profile.model'
 import type { IPost } from '@/models/post.model'
 import type { IFollow } from '@/models/follow.model'
-import type { Timestamp } from '@firebase/firestore'
 
 const db = getFirestore(firebaseApp)
 const usersRef = collection(db, 'users')
 const postsRef = collection(db, 'posts')
-const isAlreadyLikePost = false
 const followsRef = collection(db, 'follows')
-const followingRef = collection(db, 'following')
 
 const fetchProfile = async (uid: string): Promise<IProfile> => {
   const userDoc = doc(usersRef, uid)
@@ -60,7 +53,6 @@ const fetchFollow = async (userId: string): Promise<IFollow[]> => {
 }
 
 const likePost = async (postId: string, userId: string) => {
-  const profile = await fetchProfile(userId)
   const postsRef = collection(db, 'users', userId, 'posts')
   const postDoc = doc(postsRef, postId)
   const userDoc = doc(usersRef, userId)
@@ -78,14 +70,4 @@ const likePost = async (postId: string, userId: string) => {
   }
 }
 
-export {
-  usersRef,
-  followsRef,
-  followingRef,
-  postsRef,
-  fetchProfile,
-  fetchPost,
-  fetchFollow,
-  likePost,
-  db
-}
+export { usersRef, followsRef, postsRef, fetchProfile, fetchPost, fetchFollow, likePost, db }
