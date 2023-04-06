@@ -2,17 +2,17 @@
   <form>
     <div class="relative">
       <input
-          type="search"
-          id="default-search"
-          class="text-white block w-full lg:w-full bg-gray-700 p-3 pr-10 outline-none rounded-lg placeholder-gray-400 appearance-none"
-          placeholder="       Search for user"
-          required
-          v-model="searchQuery"
-          @input="searchUsers"
-          style="text-align: center;"
+        type="search"
+        id="default-search"
+        class="text-white block w-full lg:w-full bg-gray-700 p-3 pr-10 outline-none rounded-lg placeholder-gray-400 appearance-none"
+        placeholder="       Search for user"
+        required
+        v-model="searchQuery"
+        @input="searchUsers"
+        style="text-align: center"
       />
       <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-        <font-awesome-icon :icon="['fas', 'magnifying-glass']"/>
+        <font-awesome-icon :icon="['fas', 'magnifying-glass']" />
       </div>
     </div>
   </form>
@@ -20,7 +20,9 @@
     <div v-if="searchResults.length > 0" class="row custom-row">
       <div class="col custom-col" v-for="user in searchResults" :key="user.id">
         <div class="card custom-card h-100">
-          <div class="card-body text-center d-flex flex-column justify-content-center align-items-center">
+          <div
+            class="card-body text-center d-flex flex-column justify-content-center align-items-center"
+          >
             <h5 class="card-title custom-title">{{ user.name }}</h5>
             <p class="card-text"></p>
             <!--            <router-link :to="{ name: 'profile', params: { id: user.id } }" class="btn btn-primary">-->
@@ -40,11 +42,10 @@
 </template>
 
 <script lang="ts">
-
-import {defineComponent, ref} from 'vue'
-import {usersRef} from '@/plugins/firebaseDB'
-import {query, where, getDocs} from 'firebase/firestore'
-import type {Profile} from '@/models/profile.model'
+import { defineComponent, ref } from 'vue'
+import { usersRef } from '@/plugins/firebaseDB'
+import { query, where, getDocs } from 'firebase/firestore'
+import type { Profile } from '@/models/profile.model'
 
 export default defineComponent({
   setup() {
@@ -55,17 +56,23 @@ export default defineComponent({
     const searchUsers = async () => {
       searchInProgress.value = true
       if (searchQuery.value.trim()) {
-        const q = query(usersRef, where('name', '>=', searchQuery.value), where('name', '<=', searchQuery.value + '\uf8ff'))
+        const q = query(
+          usersRef,
+          where('name', '>=', searchQuery.value),
+          where('name', '<=', searchQuery.value + '\uf8ff')
+        )
         const querySnapshot = await getDocs(q)
-        searchResults.value = querySnapshot.docs.map((doc) => ({id: doc.id, ...doc.data()} as Profile))
+        searchResults.value = querySnapshot.docs.map(
+          (doc) => ({ id: doc.id, ...doc.data() } as Profile)
+        )
       } else {
         searchResults.value = []
       }
       searchInProgress.value = false
     }
 
-    return {searchQuery, searchResults, searchUsers, searchInProgress}
-  },
+    return { searchQuery, searchResults, searchUsers, searchInProgress }
+  }
 })
 </script>
 

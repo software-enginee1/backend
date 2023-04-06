@@ -42,7 +42,7 @@ export default defineComponent({
     })
 
     return { userNames, loading, error }
-  },
+  }
 })
 </script>
 

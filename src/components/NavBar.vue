@@ -4,7 +4,7 @@ import { logout } from '@/plugins/firebaseAuth'
 import { useRouter } from 'vue-router'
 import { UserCircleIcon, XCircleIcon } from '@heroicons/vue/24/outline'
 import { ref } from 'vue'
-import SearchBar from "@/components/SearchBar.vue";
+import SearchBar from '@/components/SearchBar.vue'
 
 const router = useRouter()
 const showMobileNav = ref(false)
@@ -46,7 +46,7 @@ const Logout = async () =>
           </button>
         </div>
         <div class="max-md:hidden flex items-center justify-center gap-8">
-<!--          <SearchBar v-if="user" />-->
+          <!--          <SearchBar v-if="user" />-->
           <router-link to="/search" class="link"> Search </router-link>
           <router-link to="/" class="link"> Home </router-link>
           <router-link to="/post" class="link" v-if="user"> Post </router-link>
