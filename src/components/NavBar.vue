@@ -46,7 +46,8 @@ const Logout = async () =>
           </button>
         </div>
         <div class="max-md:hidden flex items-center justify-center gap-8">
-          <SearchBar v-if="user" />
+<!--          <SearchBar v-if="user" />-->
+          <router-link to="/search" class="link"> Search </router-link>
           <router-link to="/" class="link"> Home </router-link>
           <router-link to="/post" class="link" v-if="user"> Post </router-link>
           <router-link to="/profile" v-if="user">
