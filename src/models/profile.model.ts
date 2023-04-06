@@ -1,4 +1,6 @@
-export interface Profile {
+export interface IProfile {
   id: string
-  name: string
+  name?: string
+  bio?: string
+  likes?: string[]
 }

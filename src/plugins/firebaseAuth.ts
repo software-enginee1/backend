@@ -5,9 +5,10 @@ import {
   signInWithEmailAndPassword,
   updateProfile
 } from 'firebase/auth'
-import { doc, setDoc } from 'firebase/firestore'
+import { doc, setDoc, collection, addDoc } from 'firebase/firestore'
 import { usersRef } from '@/plugins/firebaseDB'
 import { useFirebaseAuth } from 'vuefire'
+import { Timestamp } from '@firebase/firestore'
 
 const auth = useFirebaseAuth()
 
@@ -33,7 +34,25 @@ const register = async (name: string, email: string, password: string) => {
     displayName: name
   })
 
-  await setDoc(doc(usersRef, userCredential.user.uid), { name: name.toLowerCase() })
+  await setDoc(doc(usersRef, userCredential.user.uid), {
+    name: name,
+    email: email
+  })
+
+  const postsRef = collection(usersRef, userCredential.user.uid, 'posts')
+  await addDoc(postsRef, {})
+
+  const followersRef = collection(usersRef, userCredential.user.uid, 'followers')
+  await addDoc(followersRef, {})
+
+  const followingRef = collection(usersRef, userCredential.user.uid, 'following')
+  await addDoc(followingRef, {})
+
+  const likedPostsRef = collection(usersRef, userCredential.user.uid, 'likedPosts')
+  await addDoc(likedPostsRef, {})
+
+  const bioRef = collection(usersRef, userCredential.user.uid, 'bio')
+  await addDoc(bioRef, {})
 }
 
 export { login, logout, register }
