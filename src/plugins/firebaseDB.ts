@@ -29,6 +29,7 @@ const fetchProfile = async (uid: string): Promise<IProfile> => {
 
   if (snapshot.exists()) {
     return {
+      name: '',
       id: uid,
       ...snapshot.data()
     }
