@@ -45,12 +45,12 @@
 import { defineComponent, ref } from 'vue'
 import { usersRef } from '@/plugins/firebaseDB'
 import { query, where, getDocs } from 'firebase/firestore'
-import type { Profile } from '@/models/profile.model'
+import type {IProfile } from '@/models/profile.model'
 
 export default defineComponent({
   setup() {
     const searchQuery = ref('')
-    const searchResults = ref<Profile[]>([])
+    const searchResults = ref<IProfile[]>([])
     const searchInProgress = ref(false)
 
     const searchUsers = async () => {
@@ -63,7 +63,7 @@ export default defineComponent({
         )
         const querySnapshot = await getDocs(q)
         searchResults.value = querySnapshot.docs.map(
-          (doc) => ({ id: doc.id, ...doc.data() } as Profile)
+          (doc) => ({ id: doc.id, ...doc.data() } as IProfile)
         )
       } else {
         searchResults.value = []
