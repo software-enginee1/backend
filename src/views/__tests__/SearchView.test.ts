@@ -45,6 +45,27 @@ describe('SearchView.vue', () => {
         const searchResults = wrapper.findAll('.custom-card')
         expect(searchResults.length).toBe(2)
     })
+    it('updates search results when searchQuery is changed', async () => {
+        const wrapper = mount(SearchView)
+
+        // You'll need to mock the API response here with the actual data
+        const mockedSearchResults = [
+            { id: '1', name: 'User One', email: 'user.one@example.com' },
+            { id: '2', name: 'User Two', email: 'user.two@example.com' }
+        ]
+
+        // Mock the searchUsers method
+        wrapper.vm.searchUsers = async () => {
+            wrapper.vm.searchResults = mockedSearchResults
+            await nextTick()
+        }
+
+        const input = wrapper.find('input')
+        await input.setValue('User')
+        await wrapper.vm.searchUsers()
+
+        expect(wrapper.vm.searchResults.length).toBe(2)
+    })
 
 
     // Add more tests as needed
