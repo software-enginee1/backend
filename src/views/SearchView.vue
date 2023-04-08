@@ -45,7 +45,7 @@
 import { defineComponent, ref } from 'vue'
 import { usersRef } from '@/plugins/firebaseDB'
 import { query, where, getDocs } from 'firebase/firestore'
-import type {IProfile } from '@/models/profile.model'
+import type { IProfile } from '@/models/profile.model'
 
 export default defineComponent({
   setup() {
