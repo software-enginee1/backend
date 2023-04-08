@@ -5,68 +5,65 @@ import { mount } from '@vue/test-utils'
 import SearchView from '@/views/SearchView.vue'
 
 describe('SearchView.vue', () => {
-    it('renders search input', () => {
-        const wrapper = mount(SearchView)
-        const input = wrapper.find('input')
-        expect(input.exists()).toBe(true)
-    })
-    it('displays "No results found." when searchResults is empty', () => {
-        const wrapper = mount(SearchView)
-        const noResults = wrapper.find('span')
-        expect(noResults.text()).toBe('No results found.')
-    })
+  it('renders search input', () => {
+    const wrapper = mount(SearchView)
+    const input = wrapper.find('input')
+    expect(input.exists()).toBe(true)
+  })
+  it('displays "No results found." when searchResults is empty', () => {
+    const wrapper = mount(SearchView)
+    const noResults = wrapper.find('span')
+    expect(noResults.text()).toBe('No results found.')
+  })
 
-    it('displays "Loading..." when search is in progress', async () => {
-        const wrapper = mount(SearchView)
-        wrapper.vm.searchInProgress = true
-        await nextTick()
+  it('displays "Loading..." when search is in progress', async () => {
+    const wrapper = mount(SearchView)
+    wrapper.vm.searchInProgress = true
+    await nextTick()
 
-        const loading = wrapper.find('span')
-        expect(loading.text()).toBe('Loading...')
-    })
+    const loading = wrapper.find('span')
+    expect(loading.text()).toBe('Loading...')
+  })
 
-    it('displays search results when searchResults has items', async () => {
-        const wrapper = mount(SearchView)
+  it('displays search results when searchResults has items', async () => {
+    const wrapper = mount(SearchView)
 
-        wrapper.vm.searchResults = [
-            {
-                id: '1',
-                name: 'John Doe',
+    wrapper.vm.searchResults = [
+      {
+        id: '1',
+        name: 'John Doe'
+      },
+      {
+        id: '2',
+        name: 'Jane Doe'
+      }
+    ]
+    await nextTick()
 
-            },
-            {
-                id: '2',
-                name: 'Jane Doe',
+    const searchResults = wrapper.findAll('.custom-card')
+    expect(searchResults.length).toBe(2)
+  })
+  it('updates search results when searchQuery is changed', async () => {
+    const wrapper = mount(SearchView)
 
-            }
-        ]
-        await nextTick()
+    // You'll need to mock the API response here with the actual data
+    const mockedSearchResults = [
+      { id: '1', name: 'User One', email: 'user.one@example.com' },
+      { id: '2', name: 'User Two', email: 'user.two@example.com' }
+    ]
 
-        const searchResults = wrapper.findAll('.custom-card')
-        expect(searchResults.length).toBe(2)
-    })
-    it('updates search results when searchQuery is changed', async () => {
-        const wrapper = mount(SearchView)
+    // Mock the searchUsers method
+    wrapper.vm.searchUsers = async () => {
+      wrapper.vm.searchResults = mockedSearchResults
+      await nextTick()
+    }
 
-        // You'll need to mock the API response here with the actual data
-        const mockedSearchResults = [
-            { id: '1', name: 'User One', email: 'user.one@example.com' },
-            { id: '2', name: 'User Two', email: 'user.two@example.com' }
-        ]
+    const input = wrapper.find('input')
+    await input.setValue('User')
+    await wrapper.vm.searchUsers()
 
-        // Mock the searchUsers method
-        wrapper.vm.searchUsers = async () => {
-            wrapper.vm.searchResults = mockedSearchResults
-            await nextTick()
-        }
+    expect(wrapper.vm.searchResults.length).toBe(2)
+  })
 
-        const input = wrapper.find('input')
-        await input.setValue('User')
-        await wrapper.vm.searchUsers()
-
-        expect(wrapper.vm.searchResults.length).toBe(2)
-    })
-
-
-    // Add more tests as needed
+  // Add more tests as needed
 })
