@@ -83,7 +83,8 @@ export default defineComponent({
         const postRef = collection(db, 'users', userUid.value, 'posts')
         console.log('postRef:', postRef)
         const postsSnap = await getDocs(postRef)
-        posts.value = postsSnap.docs.map((docSnap) => docSnap.data())
+        const postsData = postsSnap.docs.map((docSnap) => docSnap.data())
+        posts.value = postsData.sort((a, b) => b.dateposted.toDate() - a.dateposted.toDate());
         console.log('posts: ', posts.value)
       } catch (error) {
         console.log(error)
