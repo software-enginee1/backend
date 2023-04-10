@@ -22,20 +22,30 @@ jobs:
     permissions:
       contents: write
     steps:
+      #- name: Checkout
+      #  uses: actions/checkout@v3
+      #  with:
+      #    fetch-depth: 2
+      #- name: Install dependencies
+      #  run: npm install
+      #- name: Install eslint
+      #  run: npm install eslint --save-dev
+      #- name: Install prettier
+      #  run: npm install prettier --save-dev
+      #- name: Install eslint plugins
+      #  run: npm install eslint-plugin-prettier eslint-config-prettier --save-dev
+      #- name: Install eslint config
+      #  run: npm install eslint-config-airbnb-base --save-dev
+      #- name: Run lint
+      #  run: npm run lint
+      #- name: Prettify code
+      #  run: npm run format
       - name: Checkout
         uses: actions/checkout@v3
         with:
           fetch-depth: 2
       - name: Install dependencies
-        run: npm install
-      - name: Install eslint
-        run: npm install eslint --save-dev
-      - name: Install prettier
-        run: npm install prettier --save-dev
-      - name: Install eslint plugins
-        run: npm install eslint-plugin-prettier eslint-config-prettier --save-dev
-      - name: Install eslint config
-        run: npm install eslint-config-airbnb-base --save-dev
+        run: npm ci
       - name: Run lint
         run: npm run lint
       - name: Prettify code
@@ -64,7 +74,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Install dependencies
-        run: npm install
+        run: npm ci
       - name: Run tests and generate coverage report
         run: npm run test:unit
       - name: SonarQube Scan
@@ -84,7 +94,7 @@ jobs:
           name: build
           path: build
       - name: Deploy to Firebase
-        uses: w9jds/firebase-action@v2
+        uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           args: deploy --only hosting
         env:
