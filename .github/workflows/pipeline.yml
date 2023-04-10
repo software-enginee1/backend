@@ -22,24 +22,6 @@ jobs:
     permissions:
       contents: write
     steps:
-      #- name: Checkout
-      #  uses: actions/checkout@v3
-      #  with:
-      #    fetch-depth: 2
-      #- name: Install dependencies
-      #  run: npm install
-      #- name: Install eslint
-      #  run: npm install eslint --save-dev
-      #- name: Install prettier
-      #  run: npm install prettier --save-dev
-      #- name: Install eslint plugins
-      #  run: npm install eslint-plugin-prettier eslint-config-prettier --save-dev
-      #- name: Install eslint config
-      #  run: npm install eslint-config-airbnb-base --save-dev
-      #- name: Run lint
-      #  run: npm run lint
-      #- name: Prettify code
-      #  run: npm run format
       - name: Checkout
         uses: actions/checkout@v3
         with:
@@ -92,6 +74,7 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
+    needs: [ lint, test-sonar]
     if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v3
