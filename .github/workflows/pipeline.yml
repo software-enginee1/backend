@@ -48,6 +48,13 @@ jobs:
         run: npm ci
       - name: Run lint
         run: npm run lint
+      - name: build
+        run: npm run build
+      - name: Archive Build
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: build
       - name: Prettify code
         run: npm run format
       - name: Get last commit message
