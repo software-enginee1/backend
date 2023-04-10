@@ -30,13 +30,6 @@ jobs:
         run: npm ci
       - name: Run lint
         run: npm run lint
-      - name: build
-        run: npm run build
-      - name: Archive Build
-        uses: actions/upload-artifact@v3
-        with:
-          name: build
-          path: build
       - name: Prettify code
         run: npm run format
       - name: Get last commit message
@@ -78,15 +71,13 @@ jobs:
     if: github.ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v3
-      - name: Download Build
-        uses: actions/download-artifact@v3
+      - run: npm ci && npm run build
+      - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          name: build
-          path: build
-      - name: Deploy to Firebase
-        uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          args: deploy --only hosting
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_PATREON_17BD2 }}'
+          channelId: live
+          projectId: patreon-17bd2
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
           FIREBASE_API_KEY: ${{secrets.VITE_FIREBASE_API_KEY}}
