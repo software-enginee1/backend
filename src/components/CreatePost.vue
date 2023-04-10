@@ -1,24 +1,46 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { db } from '@/firebase'
+import { collection, addDoc, doc, updateDoc } from 'firebase/firestore'
+import { useCurrentUser } from 'vuefire'
 
 export default defineComponent({
   setup() {
     const postContent = ref('')
+    const user = useCurrentUser()
 
     async function createPost() {
-      const timestamp = Date.now()
+      console.log('createPost called')
+
+      if (!user.value) {
+        alert('You must be logged in to create a post')
+        return
+      }
+
+      const timestamp = new Date()
 
       const postData = {
         content: postContent.value,
         dateposted: timestamp,
-        likes: 0
+        likes: 0,
+        userId: user.value.uid // Add userId of the one who posts
       }
 
+      console.log('postData:', postData)
+
       try {
-        const filler = db
+        const userPostsRef = collection(db, 'users', user.value.uid, 'posts')
+        const docRef = await addDoc(userPostsRef, postData)
+        console.log('Document written with ID:', docRef.id)
+
+        // Update the document with the postId
+        await updateDoc(doc(db, 'users', user.value.uid, 'posts', docRef.id), {
+          postId: docRef.id
+        })
+
+        postContent.value = ''
       } catch (error) {
-        console.log(error)
+        console.log('Error creating post:', error)
       }
     }
 
@@ -58,15 +80,18 @@ export default defineComponent({
   padding: 20px;
   margin-top: 20px;
 }
+
 .typing-box {
   width: 100%;
   resize: none;
 }
+
 .button-wrapper {
   display: flex;
   justify-content: flex-end;
   /*margin-top: 1rem;*/
 }
+
 .submit-button {
   border: none;
   padding: 8px 16px;
@@ -78,6 +103,7 @@ export default defineComponent({
   cursor: pointer;
   border-radius: 50px;
 }
+
 .submit-button img {
   width: 35px;
   height: 35px;
