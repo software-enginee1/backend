@@ -16,12 +16,12 @@ export default defineComponent({
     const route = useRoute()
     const username = route.params.username
     const user = ref({})
-    const userJoinedDate = ref(null)
+    const userJoinedDate = ref('')
     const userUid = ref('')
     const bio = ref('')
     const followerCount = ref(0)
     const followingCount = ref(0)
-    let posts = ref([])
+    const posts = ref([])
     let formatDate = ref('')
 
     async function getUser(username) {
@@ -34,12 +34,10 @@ export default defineComponent({
           user.value = userDoc.data()
           console.log(user)
           userUid.value = userDoc.id
-          userJoinedDate.value = user.value.joined.toDate().toLocaleDateString('en-US')
-          console.log('userJoinedDate: ', userJoinedDate.value)
-          getUserBio()
-          getFollowerCount()
-          getFollowingCount()
-          fetchUserPosts()
+          await getUserBio()
+          await getFollowerCount()
+          await getFollowingCount()
+          await fetchUserPosts()
         } else {
           console.log('user not found')
         }
@@ -80,11 +78,16 @@ export default defineComponent({
 
     async function fetchUserPosts() {
       try {
-        const postRef = collection(db, 'users', userUid.value, 'posts')
-        console.log('postRef:', postRef)
-        const postsSnap = await getDocs(postRef)
-        posts.value = postsSnap.docs.map((docSnap) => docSnap.data())
-        console.log('posts: ', posts.value)
+        const myPostsRef = collection(db, 'users', userUid.value, 'posts')
+        const myPostsSnap = await getDocs(myPostsRef)
+        const myPosts = myPostsSnap.docs
+          .map((doc) => ({ ...doc.data(), author: user.value.displayName }))
+          .filter((data) => Object.keys(data).length !== 1)
+        posts.value = [...posts.value, ...myPosts]
+        console.log('my posts:', myPosts)
+
+        posts.value.sort((a, b) => b.dateposted.toDate() - a.dateposted.toDate())
+        console.log('user post:', posts.value)
       } catch (error) {
         console.log(error)
       }
@@ -139,14 +142,14 @@ export default defineComponent({
       </div>
 
       <div class="posts">
-        <div v-for="post in posts" :key="post.id">
+        <div v-for="post in posts" :key="post.postId">
           <UserPost
-            :author="user.name"
+            :author="post.author"
             :date="formatDate(post.dateposted.toDate())"
             :content="post.content"
             :likes="post.likes"
-            :postId="post.id"
-            :userId="userUid"
+            :postId="post.postId"
+            :userId="post.userId"
           />
         </div>
       </div>

@@ -50,7 +50,6 @@ const Logout = async () =>
           <!--          <SearchBar v-if="user" />-->
           <router-link to="/search" class="link"> Search </router-link>
           <router-link to="/" class="link"> Home </router-link>
-          <router-link to="/post" class="link" v-if="user"> Post </router-link>
           <router-link v-if="user && username" :to="`/profile/${username}`">
             <UserCircleIcon class="h-8 w-8 link" />
           </router-link>
@@ -69,7 +68,6 @@ const Logout = async () =>
         <div class="flex flex-col items-center justify-center gap-8">
           <SearchBar v-if="user" class="mb-10" />
           <router-link to="/" class="link link-mobile"> Home </router-link>
-          <router-link to="/post" class="link link-mobile" v-if="user"> Post </router-link>
           <router-link to="/profile/" v-if="user" class="link link-mobile"> Profile </router-link>
           <div
             @click="user ? Logout() : router.push('/register')"
