@@ -43,9 +43,12 @@ export default defineComponent({
     const user = useCurrentUser()
     const userUid = ref('')
 
-    async function checkIfLiked(){
+    async function checkIfLiked() {
       if (user.value) {
-        const userQuery = query(collection(db, 'users'), where('name', '==', user.value.displayName))
+        const userQuery = query(
+          collection(db, 'users'),
+          where('name', '==', user.value.displayName)
+        )
         const userSnap = await getDocs(userQuery)
         if (!userSnap.empty) {
           const userDoc = userSnap.docs[0]
@@ -60,6 +63,7 @@ export default defineComponent({
     async function toggleLike() {
       liking.value = await likePost(props.postId, props.userId)
       console.log(liking.value)
+      window.location.reload()
     }
 
     const imagePath = computed(() => {
@@ -94,7 +98,7 @@ export default defineComponent({
   <div class="post">
     <div class="post-left">
       <div class="post-head">
-        <router-link :to='"/profile/" + author'>
+        <router-link :to="'/profile/' + author">
           <div class="username">@{{ author }}</div>
         </router-link>
         <div class="date">{{ stringPostedDate }}</div>
@@ -104,7 +108,7 @@ export default defineComponent({
     </div>
     <div class="like-button">
       <button class="liked" @click="toggleLike()">
-        <img :src="imagePath" alt='like button'/>
+        <img :src="imagePath" alt="like button" />
       </button>
     </div>
   </div>
@@ -112,56 +116,56 @@ export default defineComponent({
 
 <style scoped>
 .post {
-    display: flex;
-    justify-content: space-between;
-    background-color: white;
-    border-radius: 5px;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-    padding: 10px;
-    margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  background-color: white;
+  border-radius: 5px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  padding: 10px;
+  margin-top: 10px;
 }
 
 .username:hover {
-    color: blue;
+  color: blue;
 }
 
 .post-head {
-    display: flex;
-    align-items: center;
-    color: #181818;
+  display: flex;
+  align-items: center;
+  color: #181818;
 }
 
 .date {
-    margin-left: 5px;
-    font-size: 14px;
+  margin-left: 5px;
+  font-size: 14px;
 }
 
 .post-content {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    color: #181818;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  color: #181818;
 }
 
 .post-likes {
-    color: #181818;
+  color: #181818;
 }
 
 .like-button {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 25%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 25%;
 }
 
 .liked {
-    background-color: transparent;
-    border: none;
-    padding: 0;
-    cursor: pointer;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 
 .liked img {
-    width: 50px;
-    height: 50px;
+  width: 50px;
+  height: 50px;
 }
 </style>
