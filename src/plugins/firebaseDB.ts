@@ -69,6 +69,7 @@ const likePost = async (postId: string, userId: string) => {
     await updateDoc(postDoc, { likes: increment(1) })
     await setDoc(likeDoc, { postId })
   }
+  return !isAlreadyLikePost
 }
 
 export { usersRef, followsRef, postsRef, fetchProfile, fetchPost, fetchFollow, likePost, db }

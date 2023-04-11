@@ -1,8 +1,11 @@
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from 'vue'
+import { defineComponent, computed, ref, watch, onMounted } from 'vue'
 import liked from '@/assets/liked.png'
 import unliked from '@/assets/unliked.png'
 import { likePost } from '@/plugins/firebaseDB'
+import { useCurrentUser } from 'vuefire'
+import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore'
+import { db } from '@/firebase'
 
 export default defineComponent({
   props: {
@@ -37,18 +40,37 @@ export default defineComponent({
     })
 
     const liking = ref(false)
+    const user = useCurrentUser()
+    const userUid = ref('')
+
+    async function checkIfLiked() {
+      if (user.value) {
+        const userQuery = query(
+          collection(db, 'users'),
+          where('name', '==', user.value.displayName)
+        )
+        const userSnap = await getDocs(userQuery)
+        if (!userSnap.empty) {
+          const userDoc = userSnap.docs[0]
+          userUid.value = userDoc.id
+          const likedPostsRef = doc(db, 'users', userUid.value, 'likedPosts', props.postId)
+          const likedPostsSnap = await getDoc(likedPostsRef)
+          liking.value = likedPostsSnap.exists()
+        }
+      }
+    }
 
     async function toggleLike() {
-      await likePost(props.postId, props.userId)
-      liking.value = !liking.value
+      liking.value = await likePost(props.postId, props.userId)
       console.log(liking.value)
+      window.location.reload()
     }
 
     const imagePath = computed(() => {
       if (!liking.value) {
-        return liked
-      } else {
         return unliked
+      } else {
+        return liked
       }
     })
     watch(
@@ -57,6 +79,10 @@ export default defineComponent({
         console.log('Likes in UserPost component:', newLikes)
       }
     )
+
+    onMounted(() => {
+      checkIfLiked()
+    })
 
     return {
       stringPostedDate,
@@ -72,14 +98,17 @@ export default defineComponent({
   <div class="post">
     <div class="post-left">
       <div class="post-head">
-        <div class="username">@{{ author }} {{ stringPostedDate }}</div>
+        <router-link :to="'/profile/' + author">
+          <div class="username">@{{ author }}</div>
+        </router-link>
+        <div class="date">{{ stringPostedDate }}</div>
       </div>
       <div class="post-content">{{ content }}</div>
       <div class="post-likes">Likes: {{ likes }}</div>
     </div>
     <div class="like-button">
       <button class="liked" @click="toggleLike()">
-        <img :src="imagePath" />
+        <img :src="imagePath" alt="like button" />
       </button>
     </div>
   </div>
@@ -96,15 +125,19 @@ export default defineComponent({
   margin-top: 10px;
 }
 
-.post-left {
-  width: 75%;
+.username:hover {
+  color: blue;
 }
 
 .post-head {
   display: flex;
-  justify-content: space-between;
   align-items: center;
   color: #181818;
+}
+
+.date {
+  margin-left: 5px;
+  font-size: 14px;
 }
 
 .post-content {
