@@ -44,7 +44,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { usersRef } from '@/plugins/firebaseDB'
+import { dbService } from '@/plugins/firebaseDB'
 import { query, where, getDocs } from 'firebase/firestore'
 import type { IProfile } from '@/models/profile.model'
 
@@ -58,7 +58,7 @@ export default defineComponent({
       searchInProgress.value = true
       if (searchQuery.value.trim()) {
         const q = query(
-          usersRef,
+          dbService.usersRef,
           where('name', '>=', searchQuery.value),
           where('name', '<=', searchQuery.value + '\uf8ff')
         )

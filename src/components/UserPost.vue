@@ -2,7 +2,7 @@
 import { defineComponent, computed, ref, watch, onMounted } from 'vue'
 import liked from '@/assets/liked.png'
 import unliked from '@/assets/unliked.png'
-import { likePost } from '@/plugins/firebaseDB'
+import { dbService } from '@/plugins/firebaseDB'
 import { useCurrentUser } from 'vuefire'
 import { collection, doc, getDoc, getDocs, query, where } from 'firebase/firestore'
 import { db } from '@/firebase'
@@ -35,6 +35,7 @@ export default defineComponent({
     }
   },
   setup(props) {
+    
     const stringPostedDate = computed(() => {
       return JSON.stringify(props.date).replace(/['"]+/g, '')
     })
@@ -61,7 +62,7 @@ export default defineComponent({
     }
 
     async function toggleLike() {
-      liking.value = await likePost(props.postId, props.userId)
+      liking.value = await dbService.likePost(props.postId, props.userId)
       console.log(liking.value)
       window.location.reload()
     }
