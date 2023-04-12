@@ -186,10 +186,6 @@ export default defineComponent({
         <div class="card-header">@{{ user.name }}</div>
         <div class="card-body">
           <div class="bio">{{ bio }}</div>
-          <div class="register-date">
-            <img src="@/assets/calendar.png" alt="calendar" />
-            <p>Member since: {{ userJoinedDate }}</p>
-          </div>
           <div class="followers">
             <p>{{ followerCount }} Followers, {{ followingCount }} Following</p>
           </div>
