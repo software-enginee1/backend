@@ -16,15 +16,6 @@ export default defineComponent({
     const userUid = ref('')
     let formatDate = ref('')
 
-    async function fetchPostsFromUser(userDoc, username) {
-      const postsRef = collection(db, 'users', userDoc.id, 'posts')
-      const postsSnap = await getDocs(postsRef)
-      const posts = postsSnap.docs
-        .map((doc) => ({ ...doc.data(), author: username }))
-        .filter((data) => Object.keys(data).length !== 1)
-      return posts
-    }
-
     async function getFollowingPosts() {
       if (user.value) {
         try {
@@ -52,18 +43,15 @@ export default defineComponent({
           console.log('my posts:', myPosts)
 
           // getting posts from users you follow
-          const followedUserPostsPromises = following.value.map(async (followedUser) => {
-            const userQuery = query(userRef, where('name', '==', followedUser))
-            const userSnap = await getDocs(userQuery)
-            const userDoc = userSnap.docs[0]
-            return fetchPostsFromUser(userDoc, followedUser.displayName)
-          })
-
-          const allFollowedUserPosts = await Promise.all(followedUserPostsPromises)
-          allFollowedUserPosts.forEach((posts) => {
+          for (let i = 0; i < following.value.length; i++) {
+            const following_post = collection(db, 'users', following.value[i].userId, 'posts')
+            const userSnap = await getDocs(following_post)
+            const posts = userSnap.docs
+              .map((doc) => ({ ...doc.data() }))
+              .filter((data) => Object.keys(data).length !== 0)
+            console.log('posts:', posts)
             displayPosts.value = [...displayPosts.value, ...posts]
-          })
-
+          }
           displayPosts.value.sort((a, b) => b.dateposted.toDate() - a.dateposted.toDate())
           console.log('user post:', displayPosts.value)
         } catch (error) {
