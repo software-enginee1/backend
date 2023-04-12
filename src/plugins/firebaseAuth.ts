@@ -13,7 +13,6 @@ const auth = useFirebaseAuth()
 
 const login = async (email: string, password: string) => {
   if (!auth) throw new Error('No auth instance found')
-
   await setPersistence(auth, browserLocalPersistence)
   await signInWithEmailAndPassword(auth, email, password)
 }

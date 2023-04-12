@@ -5,7 +5,7 @@ import { devices } from '@playwright/test'
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
-// require('dotenv').config();
+// require('dotenv').config()
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -51,10 +51,10 @@ const config: PlaywrightTestConfig = {
       use: {
         ...devices['Desktop Chrome'],
         // Use prepared auth state.
-        storageState: 'playwright/.auth/user.json',
+        storageState: 'playwright/.auth/user.json'
       },
-      dependencies: ['setup'],
-    },
+      dependencies: ['setup']
+    }
     // {
     //   name: 'firefox',
     //   use: {
