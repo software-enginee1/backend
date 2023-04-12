@@ -2,7 +2,7 @@
   "cookies": [],
   "origins": [
     {
-      "origin": "https://patreon-17bd2.web.app",
+      "origin": "https://patreon-17bd2.web.app" ,
       "localStorage": [
         {
           "name": "firebase:authUser:AIzaSyBJkIvywRZUvrdZz1CjZuEquc_NGaR00FQ:[DEFAULT]",
