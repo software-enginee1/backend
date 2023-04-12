@@ -9,7 +9,6 @@ import { useCurrentUser } from 'vuefire'
 import { dbService } from '@/plugins/firebaseDB'
 
 export default defineComponent({
-  methods: { getCurrentUser },
   components: {
     CreatePost,
     UserPost
@@ -119,8 +118,8 @@ export default defineComponent({
       }
     }
 
-    async function isFollow() {
-      isFollowing.value = await isFollowed(currentUser.value.uid, userUid.value)
+    async function toggleFollowCheck() {
+      isFollowing.value = await dbService.isFollowed(currentUser.value.uid, userUid.value)
     }
 
     const isCurrentUser = computed(() => {
@@ -129,7 +128,7 @@ export default defineComponent({
 
     onBeforeMount(async () => {
       await getUser(username)
-      await isFollow()
+      await toggleFollowCheck()
     })
 
     return {
@@ -143,6 +142,7 @@ export default defineComponent({
       followingCount,
       isCurrentUser,
       isFollowing,
+      toggleFollowCheck,
       toggleFollow
     }
   }
