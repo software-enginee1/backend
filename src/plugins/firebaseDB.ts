@@ -9,7 +9,8 @@ import {
   updateDoc,
   increment,
   setDoc,
-  deleteDoc
+  deleteDoc,
+  addDoc
 } from 'firebase/firestore'
 import { firebaseApp } from '@/firebase'
 import type { IProfile } from '@/models/profile.model'
@@ -59,7 +60,7 @@ const likePost = async (postId: string, userId: string) => {
   const userDoc = doc(usersRef, userId)
 
   const likeDoc = doc(userDoc, 'likedPosts', postId)
-  const likedPostSnap = await getDoc(likeDoc)
+  const likedPostSnap = await getDoc(likeDoc)      
   const isAlreadyLikePost = likedPostSnap.exists()
   if (isAlreadyLikePost) {
     // if user already liked the post, unlike it
@@ -72,4 +73,34 @@ const likePost = async (postId: string, userId: string) => {
   return !isAlreadyLikePost
 }
 
-export { usersRef, followsRef, postsRef, fetchProfile, fetchPost, fetchFollow, likePost, db }
+const follow = async(userId: string, followerId: string) => {
+  const userRef = collection(db, 'users', userId, 'following')
+  const followerRef = collection(db, 'users', followerId, 'followers')
+  await addDoc(userRef, { userId: followerId })
+  await addDoc(followerRef, { userId: userId }) 
+}
+
+const unFollow = async(userId: string, followerId: string) => {
+  const userDoc = await getDocs(query(collection(db, 'users', userId, 'following'), where('userId', '==', followerId)))
+  const followerDoc = await getDocs(query(collection(db, 'users', followerId, 'followers'), where('userId', '==', userId)))
+
+  userDoc.forEach(async (doc) => {
+    await deleteDoc(doc.ref);
+  });
+
+  followerDoc.forEach(async (doc) => {
+    await deleteDoc(doc.ref);
+  });
+
+}
+
+const isFollowed = async(userId: string, followerId: string) => {
+  try {
+    const followDocs = await getDocs(query(collection(db, 'users', followerId, 'followers'), where('userId', '==', userId)))
+    return !followDocs.empty
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export { usersRef, followsRef, postsRef, fetchProfile, fetchPost, fetchFollow, likePost, follow, unFollow, isFollowed, db }
