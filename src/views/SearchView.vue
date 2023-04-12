@@ -23,13 +23,12 @@
           <div
             class="card-body text-center d-flex flex-column justify-content-center align-items-center"
           >
-            <p class="card-text">
-              <h5>
-                <router-link :to="{ name: 'Profile', params: { username: user.name } }">
-                  {{ user.name }}
-                </router-link>
-              </h5>
-            </p>
+            <p class="card-text"></p>
+            <h5>
+              <router-link :to="{ name: 'Profile', params: { username: user.name } }">
+                {{ user.name }}
+              </router-link>
+            </h5>
           </div>
         </div>
       </div>
@@ -72,7 +71,6 @@ export default defineComponent({
       }
       searchInProgress.value = false
     }
-
     return { searchQuery, searchResults, searchUsers, searchInProgress }
   }
 })

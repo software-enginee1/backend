@@ -3,12 +3,10 @@ import { defineComponent, onBeforeMount, computed, ref } from 'vue'
 import CreatePost from '@/components/CreatePost.vue'
 import UserPost from '@/components/UserPost.vue'
 import { db } from '@/firebase'
-import { collection, getDocs, query, where, doc, deleteDoc } from 'firebase/firestore'
+import { collection, getDocs, query, where } from 'firebase/firestore'
 import { useRoute } from 'vue-router'
 import { useCurrentUser } from 'vuefire'
 import { follow, unFollow, isFollowed } from '@/plugins/firebaseDB'
-
-
 
 export default defineComponent({
   components: {
@@ -38,7 +36,7 @@ export default defineComponent({
         if (!userSnap.empty) {
           const userDoc = userSnap.docs[0]
           user.value = userDoc.data()
-          console.log("user info", user)
+          console.log('user info', user)
           userUid.value = userDoc.id
           userJoinedDate.value = userDoc.displayName
           await getUserBio()
@@ -144,14 +142,14 @@ export default defineComponent({
           isFollowing.value = false
         } else {
           await follow(currentUser.value.uid, userUid.value)
-          isFollowing.value = true 
+          isFollowing.value = true
         }
       } catch (error) {
         console.log(error)
       }
     }
 
-    async function isFollow(){
+    async function isFollow() {
       isFollowing.value = await isFollowed(currentUser.value.uid, userUid.value)
     }
 
@@ -209,8 +207,14 @@ export default defineComponent({
 
       <div class="posts">
         <div v-for="post in posts" :key="post.postId">
-          <UserPost :author="post.author" :date="formatDate(post.dateposted.toDate())" :content="post.content"
-            :likes="post.likes" :postId="post.postId" :userId="post.userId" />
+          <UserPost
+            :author="post.author"
+            :date="formatDate(post.dateposted.toDate())"
+            :content="post.content"
+            :likes="post.likes"
+            :postId="post.postId"
+            :userId="post.userId"
+          />
         </div>
       </div>
     </div>
