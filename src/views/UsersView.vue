@@ -19,7 +19,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue'
-import { usersRef } from '@/plugins/firebaseDB'
+import { dbService } from '@/plugins/firebaseDB'
 import { getDocs } from 'firebase/firestore'
 
 export default defineComponent({
@@ -30,7 +30,7 @@ export default defineComponent({
 
     onMounted(async () => {
       try {
-        const querySnapshot = await getDocs(usersRef)
+        const querySnapshot = await getDocs(dbService.usersRef)
         userNames.value = querySnapshot.docs.map((doc) => doc.data().name)
         console.log('Fetched users:', userNames.value)
       } catch (err: any) {

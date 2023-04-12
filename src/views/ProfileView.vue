@@ -5,11 +5,10 @@ import UserPost from '@/components/UserPost.vue'
 import { db } from '@/firebase'
 import { collection, getDocs, query, where } from 'firebase/firestore'
 import { useRoute } from 'vue-router'
-import { getCurrentUser, useCurrentUser } from 'vuefire'
-import { follow, unFollow, isFollowed } from '@/plugins/firebaseDB'
+import { useCurrentUser } from 'vuefire'
+import { dbService } from '@/plugins/firebaseDB'
 
 export default defineComponent({
-  methods: { getCurrentUser },
   components: {
     CreatePost,
     UserPost
@@ -61,36 +60,6 @@ export default defineComponent({
       }
     }
 
-    // async function getFollowerCount() {
-    //   try {
-    //     const collectionRef = collection(db, 'users', userUid.value, 'followers')
-    //     const follower = await getDocs(collectionRef)
-    //     const keyCount = Object.keys(follower.docs[0].data()).length
-    //     if (!keyCount) {
-    //       followerCount.value = 0
-    //     } else {
-    //       followerCount.value = follower.size
-    //     }
-    //   } catch (error) {
-    //     console.log(error)
-    //   }
-    // }
-
-    // async function getFollowingCount() {
-    //   try {
-    //     const collectionRef = collection(db, 'users', userUid.value, 'following')
-    //     const following = await getDocs(collectionRef)
-    //     const keyCount = Object.keys(following.docs[0].data()).length
-    //     if (!keyCount) {
-    //       followingCount.value = 0
-    //     } else {
-    //       followingCount.value = following.size
-    //     }
-    //   } catch (error) {
-    //     console.log(error)
-    //   }
-    // }
-
     async function getFollowerCount() {
       try {
         const collectionRef = collection(db, 'users', userUid.value, 'followers')
@@ -138,10 +107,10 @@ export default defineComponent({
     async function toggleFollow() {
       try {
         if (isFollowing.value) {
-          await unFollow(currentUser.value.uid, userUid.value)
+          await dbService.unFollow(currentUser.value.uid, userUid.value)
           isFollowing.value = false
         } else {
-          await follow(currentUser.value.uid, userUid.value)
+          await dbService.follow(currentUser.value.uid, userUid.value)
           isFollowing.value = true
         }
       } catch (error) {
@@ -149,8 +118,8 @@ export default defineComponent({
       }
     }
 
-    async function isFollow() {
-      isFollowing.value = await isFollowed(currentUser.value.uid, userUid.value)
+    async function toggleFollowCheck() {
+      isFollowing.value = await dbService.isFollowed(currentUser.value.uid, userUid.value)
     }
 
     const isCurrentUser = computed(() => {
@@ -159,7 +128,7 @@ export default defineComponent({
 
     onBeforeMount(async () => {
       await getUser(username)
-      await isFollow()
+      await toggleFollowCheck()
     })
 
     return {
@@ -173,6 +142,7 @@ export default defineComponent({
       followingCount,
       isCurrentUser,
       isFollowing,
+      toggleFollowCheck,
       toggleFollow
     }
   }

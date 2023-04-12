@@ -1,5 +1,5 @@
 // tests/unit/components/SearchView.spec.ts
-import { describe, it, expect, beforeEach } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { nextTick } from 'vue'
 import { mount } from '@vue/test-utils'
 import SearchView from '@/views/SearchView.vue'

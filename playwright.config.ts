@@ -5,7 +5,7 @@ import { devices } from '@playwright/test'
  * Read environment variables from file.
  * https://github.com/motdotla/dotenv
  */
-// require('dotenv').config();
+// require('dotenv').config()
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -45,52 +45,32 @@ const config: PlaywrightTestConfig = {
 
   /* Configure projects for major browsers */
   projects: [
+    { name: 'setup', testMatch: /.*\.setup\.ts/ },
     {
       name: 'chromium',
       use: {
-        ...devices['Desktop Chrome']
-      }
-    },
-    {
-      name: 'firefox',
-      use: {
-        ...devices['Desktop Firefox']
-      }
-    },
-    {
-      name: 'webkit',
-      use: {
-        ...devices['Desktop Safari']
-      }
+        ...devices['Desktop Chrome'],
+        // Use prepared auth state.
+        storageState: 'playwright/.auth/user.json'
+      },
+      dependencies: ['setup']
     }
-
-    /* Test against mobile viewports. */
     // {
-    //   name: 'Mobile Chrome',
+    //   name: 'firefox',
     //   use: {
-    //     ...devices['Pixel 5'],
+    //     ...devices['Desktop Firefox'],
+    //     storageState: 'playwright/.auth/user.json',
     //   },
+    //   dependencies: ['setup'],
     // },
     // {
-    //   name: 'Mobile Safari',
+    //   name: 'webkit',
     //   use: {
-    //     ...devices['iPhone 12'],
+    //     ...devices['Desktop Safari'],
+    //     storageState: 'playwright/.auth/user.json',
     //   },
-    // },
-
-    /* Test against branded browsers. */
-    // {
-    //   name: 'Microsoft Edge',
-    //   use: {
-    //     channel: 'msedge',
-    //   },
-    // },
-    // {
-    //   name: 'Google Chrome',
-    //   use: {
-    //     channel: 'chrome',
-    //   },
-    // },
+    //   dependencies: ['setup'],
+    // }
   ],
 
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
