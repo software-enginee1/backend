@@ -35,7 +35,6 @@ export default defineComponent({
     }
   },
   setup(props) {
-    
     const stringPostedDate = computed(() => {
       return JSON.stringify(props.date).replace(/['"]+/g, '')
     })

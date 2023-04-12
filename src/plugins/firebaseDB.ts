@@ -18,7 +18,6 @@ import type { IPost } from '@/models/post.model'
 import type { IFollow } from '@/models/follow.model'
 
 export class DBService {
-
   db = getFirestore(firebaseApp)
   usersRef = collection(this.db, 'users')
   postsRef = collection(this.db, 'posts')
@@ -27,7 +26,7 @@ export class DBService {
   public fetchProfile = async (uid: string): Promise<IProfile> => {
     const userDoc = doc(this.usersRef, uid)
     const snapshot = await getDoc(userDoc)
-  
+
     if (snapshot.exists()) {
       return {
         name: '',
@@ -55,7 +54,7 @@ export class DBService {
     const querySnapshot = await getDocs(q)
     return querySnapshot.docs.map((doc) => doc.data() as IFollow)
   }
-  
+
   public likePost = async (postId: string, userId: string) => {
     const postsRef = collection(this.db, 'users', userId, 'posts')
     const postDoc = doc(postsRef, postId)
@@ -73,14 +72,14 @@ export class DBService {
     }
     return !isAlreadyLikePost
   }
-  
+
   public follow = async (userId: string, followerId: string) => {
     const userRef = collection(this.db, 'users', userId, 'following')
     const followerRef = collection(this.db, 'users', followerId, 'followers')
     await addDoc(userRef, { userId: followerId })
     await addDoc(followerRef, { userId: userId })
   }
-  
+
   public unFollow = async (userId: string, followerId: string) => {
     const userDoc = await getDocs(
       query(collection(this.db, 'users', userId, 'following'), where('userId', '==', followerId))
@@ -88,16 +87,16 @@ export class DBService {
     const followerDoc = await getDocs(
       query(collection(this.db, 'users', followerId, 'followers'), where('userId', '==', userId))
     )
-  
+
     userDoc.forEach(async (doc) => {
       await deleteDoc(doc.ref)
     })
-  
+
     followerDoc.forEach(async (doc) => {
       await deleteDoc(doc.ref)
     })
   }
-  
+
   public isFollowed = async (userId: string, followerId: string) => {
     try {
       const followDocs = await getDocs(
@@ -112,6 +111,4 @@ export class DBService {
 
 const dbService = new DBService()
 
-export {
-  dbService
-}
+export { dbService }
