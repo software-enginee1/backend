@@ -1,10 +1,14 @@
 <script>
-import { defineComponent, onBeforeMount, ref } from 'vue'
+import { defineComponent, onBeforeMount, computed, ref } from 'vue'
 import CreatePost from '@/components/CreatePost.vue'
 import UserPost from '@/components/UserPost.vue'
 import { db } from '@/firebase'
-import { collection, getDocs, query, where } from 'firebase/firestore'
+import { collection, getDocs, query, where, doc, deleteDoc } from 'firebase/firestore'
 import { useRoute } from 'vue-router'
+import { useCurrentUser } from 'vuefire'
+import { follow, unFollow, isFollowed } from '@/plugins/firebaseDB'
+
+
 
 export default defineComponent({
   components: {
@@ -14,6 +18,7 @@ export default defineComponent({
 
   setup() {
     const route = useRoute()
+    const currentUser = useCurrentUser()
     const username = route.params.username
     const user = ref({})
     const userJoinedDate = ref('')
@@ -21,6 +26,7 @@ export default defineComponent({
     const bio = ref('')
     const followerCount = ref(0)
     const followingCount = ref(0)
+    const isFollowing = ref(false)
     const posts = ref([])
     let formatDate = ref('')
 
@@ -32,8 +38,9 @@ export default defineComponent({
         if (!userSnap.empty) {
           const userDoc = userSnap.docs[0]
           user.value = userDoc.data()
-          console.log(user)
+          console.log("user info", user)
           userUid.value = userDoc.id
+          userJoinedDate.value = userDoc.displayName
           await getUserBio()
           await getFollowerCount()
           await getFollowingCount()
@@ -55,6 +62,36 @@ export default defineComponent({
         console.log(error)
       }
     }
+
+    // async function getFollowerCount() {
+    //   try {
+    //     const collectionRef = collection(db, 'users', userUid.value, 'followers')
+    //     const follower = await getDocs(collectionRef)
+    //     const keyCount = Object.keys(follower.docs[0].data()).length
+    //     if (!keyCount) {
+    //       followerCount.value = 0
+    //     } else {
+    //       followerCount.value = follower.size
+    //     }
+    //   } catch (error) {
+    //     console.log(error)
+    //   }
+    // }
+
+    // async function getFollowingCount() {
+    //   try {
+    //     const collectionRef = collection(db, 'users', userUid.value, 'following')
+    //     const following = await getDocs(collectionRef)
+    //     const keyCount = Object.keys(following.docs[0].data()).length
+    //     if (!keyCount) {
+    //       followingCount.value = 0
+    //     } else {
+    //       followingCount.value = following.size
+    //     }
+    //   } catch (error) {
+    //     console.log(error)
+    //   }
+    // }
 
     async function getFollowerCount() {
       try {
@@ -100,8 +137,31 @@ export default defineComponent({
       }
     }
 
+    async function toggleFollow() {
+      try {
+        if (isFollowing.value) {
+          await unFollow(currentUser.value.uid, userUid.value)
+          isFollowing.value = false
+        } else {
+          await follow(currentUser.value.uid, userUid.value)
+          isFollowing.value = true 
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    async function isFollow(){
+      isFollowing.value = await isFollowed(currentUser.value.uid, userUid.value)
+    }
+
+    const isCurrentUser = computed(() => {
+      return currentUser.value.displayName == username
+    })
+
     onBeforeMount(async () => {
       await getUser(username)
+      await isFollow()
     })
 
     return {
@@ -112,7 +172,10 @@ export default defineComponent({
       followerCount,
       posts,
       formatDate,
-      followingCount
+      followingCount,
+      isCurrentUser,
+      isFollowing,
+      toggleFollow
     }
   }
 })
@@ -122,20 +185,23 @@ export default defineComponent({
   <div class="white-container">
     <div>
       <div class="card">
-        <div class="card-header">{{ user.name }}</div>
+        <div class="card-header">@{{ user.name }}</div>
         <div class="card-body">
           <div class="bio">{{ bio }}</div>
           <div class="register-date">
             <img src="@/assets/calendar.png" alt="calendar" />
-            <p>Joined {{ userJoinedDate }}</p>
+            <p>Member since: {{ userJoinedDate }}</p>
           </div>
           <div class="followers">
-            <p>{{ followerCount }} Followers {{ followingCount }} Following</p>
+            <p>{{ followerCount }} Followers, {{ followingCount }} Following</p>
           </div>
+          <button v-if="!isCurrentUser" class="liked" @click="toggleFollow()">
+            {{ isFollowing ? 'Unfollow' : 'Follow' }}
+          </button>
         </div>
       </div>
 
-      <div class="create-post">
+      <div class="create-post" v-if="isCurrentUser">
         <div class="post-box">
           <CreatePost />
         </div>
@@ -143,14 +209,8 @@ export default defineComponent({
 
       <div class="posts">
         <div v-for="post in posts" :key="post.postId">
-          <UserPost
-            :author="post.author"
-            :date="formatDate(post.dateposted.toDate())"
-            :content="post.content"
-            :likes="post.likes"
-            :postId="post.postId"
-            :userId="post.userId"
-          />
+          <UserPost :author="post.author" :date="formatDate(post.dateposted.toDate())" :content="post.content"
+            :likes="post.likes" :postId="post.postId" :userId="post.userId" />
         </div>
       </div>
     </div>

@@ -23,11 +23,13 @@
           <div
             class="card-body text-center d-flex flex-column justify-content-center align-items-center"
           >
-            <h5 class="card-title custom-title">{{ user.name }}</h5>
-            <p class="card-text"></p>
-            <!--            <router-link :to="{ name: 'profile', params: { id: user.id } }" class="btn btn-primary">-->
-            <!--              View Profile-->
-            <!--            </router-link>-->
+            <p class="card-text">
+              <h5>
+                <router-link :to="{ name: 'Profile', params: { username: user.name } }">
+                  {{ user.name }}
+                </router-link>
+              </h5>
+            </p>
           </div>
         </div>
       </div>
