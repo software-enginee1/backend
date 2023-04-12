@@ -23,11 +23,8 @@
           <div
             class="card-body text-center d-flex flex-column justify-content-center align-items-center"
           >
-            <h5 class="card-title custom-title">{{ user.name }}</h5>
+            <h5 class="card-title custom-title" @click="user.name && goToProfile(user.name)" style="cursor: pointer">{{ user.name }}</h5>
             <p class="card-text"></p>
-            <!--            <router-link :to="{ name: 'profile', params: { id: user.id } }" class="btn btn-primary">-->
-            <!--              View Profile-->
-            <!--            </router-link>-->
           </div>
         </div>
       </div>
@@ -42,66 +39,68 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
-import { usersRef } from '@/plugins/firebaseDB'
-import { query, where, getDocs } from 'firebase/firestore'
-import type { IProfile } from '@/models/profile.model'
+import { defineComponent, ref } from 'vue';
+import { usersRef } from '@/plugins/firebaseDB';
+import { query, where, getDocs } from 'firebase/firestore';
+import type { IProfile } from '@/models/profile.model';
+import { useRouter } from 'vue-router';
 
 export default defineComponent({
   setup() {
-    const searchQuery = ref('')
-    const searchResults = ref<IProfile[]>([])
-    const searchInProgress = ref(false)
+    const searchQuery = ref('');
+    const searchResults = ref<IProfile[]>([]);
+    const searchInProgress = ref(false);
+    const router = useRouter();
 
     const searchUsers = async () => {
-      searchInProgress.value = true
+      searchInProgress.value = true;
       if (searchQuery.value.trim()) {
         const q = query(
           usersRef,
           where('name', '>=', searchQuery.value),
           where('name', '<=', searchQuery.value + '\uf8ff')
-        )
-        const querySnapshot = await getDocs(q)
+        );
+        const querySnapshot = await getDocs(q);
         searchResults.value = querySnapshot.docs.map(
           (doc) => ({ id: doc.id, ...doc.data() } as IProfile)
-        )
+        );
       } else {
-        searchResults.value = []
+        searchResults.value = [];
       }
-      searchInProgress.value = false
-    }
+      searchInProgress.value = false;
+    };
 
-    return { searchQuery, searchResults, searchUsers, searchInProgress }
-  }
-})
+    const goToProfile = (username: string) => {
+      router.push({ name: 'Profile', params: { username } });
+    };
+
+    return { searchQuery, searchResults, searchUsers, searchInProgress, goToProfile };
+  },
+});
 </script>
 
 <style scoped>
-.container {
-  max-width: 800px;
-}
-
 .custom-card {
-  background-color: #0b0b0b;
-  border-radius: 0.5rem;
-  height: 32px;
+    background-color: #0b0b0b;
+    border-radius: 0.5rem;
+    height: 32px;
 }
 
 .custom-row {
-  margin: 0 -0.05rem;
+    margin: 0 -0.05rem;
 }
 
 .custom-col {
-  padding: 0.05rem;
+    padding: 0.05rem;
 }
 
 .custom-title {
-  font-size: 18px;
+    font-size: 18px;
 }
 
 @media (min-width: 768px) {
-  .custom-card {
-    width: calc(100%);
-  }
+    .custom-card {
+        width: calc(100%);
+    }
 }
 </style>
