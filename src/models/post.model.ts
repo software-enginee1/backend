@@ -5,5 +5,6 @@ export interface IPost {
   content: string
   timestamp: Timestamp
   userId: string
+  author: string
   likesCount: number
 }

@@ -33,20 +33,6 @@ export default defineComponent({
             .filter((data) => Object.keys(data).length !== 0)
           console.log(following.value)
 
-          // getting posts from users you follow
-          for (let i = 0; i < following.value.length; i++) {
-            const followedUser = following.value[i].username
-            const userQuery = query(userRef, where('name', '==', followedUser))
-            const userSnap = await getDocs(userQuery)
-            const postsRef = collection(db, 'users', userSnap.docs[0].id, 'posts')
-            const postsSnap = await getDocs(postsRef)
-            const posts = postsSnap.docs
-              .map((doc) => ({ ...doc.data(), author: followedUser }))
-              .filter((data) => Object.keys(data).length !== 1)
-            displayPosts.value = [...displayPosts.value, ...posts]
-            console.log('user post:', displayPosts.value)
-          }
-
           // getting your own posts
           const myPostsRef = collection(db, 'users', userUid.value, 'posts')
           const myPostsSnap = await getDocs(myPostsRef)
@@ -56,6 +42,16 @@ export default defineComponent({
           displayPosts.value = [...displayPosts.value, ...myPosts]
           console.log('my posts:', myPosts)
 
+          // getting posts from users you follow
+          for (let i = 0; i < following.value.length; i++) {
+            const following_post = collection(db, 'users', following.value[i].userId, 'posts')
+            const userSnap = await getDocs(following_post)
+            const posts = userSnap.docs
+              .map((doc) => ({ ...doc.data() }))
+              .filter((data) => Object.keys(data).length !== 0)
+            console.log('posts:', posts)
+            displayPosts.value = [...displayPosts.value, ...posts]
+          }
           displayPosts.value.sort((a, b) => b.dateposted.toDate() - a.dateposted.toDate())
           console.log('user post:', displayPosts.value)
         } catch (error) {
@@ -63,7 +59,6 @@ export default defineComponent({
         }
       }
     }
-
     onMounted(() => {
       formatDate.value = (date) => {
         if (!date) return ''
@@ -123,7 +118,6 @@ export default defineComponent({
   margin: 0 auto;
   min-height: 100vh;
 }
-
 .home {
   text-align: center;
   font-size: 2rem;

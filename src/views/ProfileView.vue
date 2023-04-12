@@ -9,6 +9,7 @@ import { useCurrentUser } from 'vuefire'
 import { dbService } from '@/plugins/firebaseDB'
 
 export default defineComponent({
+  methods: { getCurrentUser },
   components: {
     CreatePost,
     UserPost
@@ -38,7 +39,6 @@ export default defineComponent({
           user.value = userDoc.data()
           console.log('user info', user)
           userUid.value = userDoc.id
-          userJoinedDate.value = userDoc.displayName
           await getUserBio()
           await getFollowerCount()
           await getFollowingCount()
@@ -86,7 +86,7 @@ export default defineComponent({
         const myPostsRef = collection(db, 'users', userUid.value, 'posts')
         const myPostsSnap = await getDocs(myPostsRef)
         const myPosts = myPostsSnap.docs
-          .map((doc) => ({ ...doc.data(), author: user.value.displayName }))
+          .map((doc) => ({ ...doc.data(), author: user.value.name }))
           .filter((data) => Object.keys(data).length !== 1)
         posts.value = [...posts.value, ...myPosts]
         console.log('my posts:', myPosts)
