@@ -23,7 +23,8 @@ export default defineComponent({
         content: postContent.value,
         dateposted: timestamp,
         likes: 0,
-        userId: user.value.uid // Add userId of the one who posts
+        userId: user.value.uid,
+        author: user.value.displayName
       }
 
       console.log('postData:', postData)
